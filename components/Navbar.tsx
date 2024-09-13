@@ -58,7 +58,7 @@ const Navbar = () => {
             {link}
           </Link>
         ))}
-         <Link href='./register' className="p-[9px] bg-yellow-700 text-white" >Book Appointment </Link>
+         <Link href='./register' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
       </div>
 
       {/* Mobile Nav */}

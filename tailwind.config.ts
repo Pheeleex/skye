@@ -40,6 +40,7 @@ const config = {
 			gold:{
 				'200': 'rgb(145, 103, 12, 0.6)',
 				'400': '#91670c',
+				'500': 'linear-gradient(45deg, #FFD700, #FFA700, #FF8C00)'
 			},
   			dark: {
   				'200': '#F8F9FA',  // Very light gray (almost white)

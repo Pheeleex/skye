@@ -169,13 +169,33 @@ font-weight: bold;
     @apply flex w-full flex-col justify-between gap-5 sm:flex-row xl:gap-10;
   }
 
+
+  .gold-gradient{
+    background: linear-gradient(45deg, #756300, #FFD700, #664a04);
+  }
+
+  .gold-border{
+    border-color: (45deg, #756300, #FFD700, #664a04);
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, #b89707 2.34%, #f8ef73 100.78%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+
+
+
+
   /* ==== FORM */
   .radio-group {
-    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-dark-500 bg-dark-400 p-3;
+    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-yellow-400 bg-white p-3 text-gold-400;
   }
 
   .checkbox-label {
-    @apply cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+    @apply cursor-pointer text-lg font-medium text-gold-400 peer-disabled:cursor-not-allowed peer-disabled:opacity-100 md:leading-none;
   }
 
   /* ==== File Upload */
@@ -270,7 +290,7 @@ font-weight: bold;
   }
 
   .shad-input-label {
-    @apply text-14-medium text-dark-700 !important;
+    @apply text-14-medium text-gold-400 !important;
   }
   .gold{
     background-color: #91670c;
@@ -285,7 +305,7 @@ font-weight: bold;
   }
 
   .shad-textArea {
-    @apply bg-dark-400 placeholder:text-gold-200 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply bg-transparent placeholder:text-gold-200 border-gold-400 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
   }
 
   .shad-combobox-item {
@@ -368,9 +388,9 @@ font-weight: bold;
 .react-datepicker__day-name,
 .react-datepicker__day,
 .react-datepicker-time__header {
-  background-color: #1a1d21 !important;
-  border-color: #363a3d !important;
-  color: #abb8c4 !important;
+  background-color: #7c5707 !important;
+  border-color: #dabd3c!important;
+  color: #e5e9d4 !important;
 }
 
 .react-datepicker__current-month,
@@ -390,13 +410,13 @@ font-weight: bold;
 }
 
 .react-datepicker__input-container input {
-  background-color: #1a1d21 !important;
+  background-color: '#CED4DA' !important;
   width: 100%;
   outline: none;
 }
 
 .react-datepicker__day--selected {
-  background-color: #24ae7c !important;
+  background-color: #271b01 !important;
   color: #ffffff !important;
   border-radius: 4px;
 }

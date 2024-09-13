@@ -50,7 +50,7 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
         case FormFieldType.INPUT:
             return(
                 <div className="flex rounded-md border 
-                border-gold-200 bg-transparent">
+                border-gold-400 bg-transparent">
                     {
                         props.iconSrc && (
                             <Image
@@ -113,7 +113,7 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
               case FormFieldType.DATE_PICKER:
                 return(
                   <div className='flex rounded-md border
-                   border-dark-500 bg-dark-400'>
+                   border-gold-400 bg-white'>
                       <Image
                         src="public/assets/icons/calender.svg"
                         height={24}
