@@ -26,6 +26,32 @@ export const PatientFormDefaultValues = {
   privacyConsent: false,
 };
 
+export const PatientDetailsDefaultValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  birthDate: new Date(Date.now()),
+  gender: "male" as Gender,
+  address: "",
+  occupation: "",
+  emergencyContactName: "",
+  emergencyContactNumber: "",
+  primaryPhysician: "",
+  insuranceProvider: "",
+  insurancePolicyNumber: "",
+  allergies: "",
+  currentMedication: "",
+  familyMedicalHistory: "",
+  pastMedicalHistory: "",
+  identificationType: "Birth Certificate",
+  identificationNumber: "",
+  identificationDocument: [],
+  treatmentConsent: false,
+  disclosureConsent: false,
+  privacyConsent: false,
+};
+
 export const IdentificationTypes = [
   "Birth Certificate",
   "Driver's License",
@@ -78,6 +104,11 @@ export const Doctors = [
     name: "Hardik Sharma",
   },
 ];
+
+
+export const Treatments= [
+'Medical weightloss', 'Face lift Treatments','Chemical Peels', 'Dermaneedling', 'Consultation'
+]
 
 export const StatusIcon = {
   scheduled: "/assets/icons/check.svg",

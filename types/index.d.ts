@@ -6,6 +6,7 @@ declare type SearchParamProps = {
   };
   
   declare type Gender = "male" | "female" | "other";
+  declare type Location = 'Lagos' | 'Abuja'
   declare type Status = "pending" | "scheduled" | "cancelled";
   
   declare interface CreateUserParams {
@@ -17,6 +18,17 @@ declare type SearchParamProps = {
     $id: string;
   }
   
+  declare interface AddBookingParams {
+    name: string;
+    email: string;
+    phoneNumber: string;
+    location: Location
+    treatment: string;
+    reason: string;
+    schedule: Date;
+    note: string | undefined;
+  }
+
   declare interface RegisterUserParams extends CreateUserParams {
     userId: string;
     birthDate: Date;
@@ -35,6 +47,20 @@ declare type SearchParamProps = {
     identificationType: string | undefined;
     identificationNumber: string | undefined;
     identificationDocument: FormData | undefined;
+    privacyConsent: boolean;
+  }
+
+  declare interface PatientDetailsParams extends CreateUserParams {
+    userId: string;
+    birthDate: Date;
+    gender: Gender;
+    address: string;
+    occupation: string;
+    emergencyContactName: string;
+    emergencyContactNumber: string;
+    allergies: string | undefined;
+    currentMedication: string | undefined;
+    facePicture: FormData | undefined;
     privacyConsent: boolean;
   }
   

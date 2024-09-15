@@ -1,5 +1,6 @@
 //import PassKeyModal from "@/components/PassKeyModal";
 import PatientForm from "@/components/forms/PatientForm";
+import PassKeyModal from "@/components/PassKeyModal";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ const Home = ({ searchParams }: SearchParamProps) => {
 
   return (
     <div className="flex h-screen max-h-screen">
-       {/*isAdmin && <PassKeyModal /> */}
+       {isAdmin && <PassKeyModal /> }
 
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px]">
@@ -21,7 +22,7 @@ const Home = ({ searchParams }: SearchParamProps) => {
             <p className="justify-items-end text-dark-600 xl:text-left">
               © 2024 CarePluse
             </p>
-            <Link href="/?admin=true" className="text-gold-400">
+            <Link href="/schedule-appointment/?admin=true" className="text-gold-400">
               Admin
             </Link>
           </div>

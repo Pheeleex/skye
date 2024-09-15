@@ -25,6 +25,8 @@ const Navbar = () => {
     router.push(href);
   };
 
+  if (pathname === "/admin") return null;
+
   return (
     <nav className="flex justify-between items-center p-2 md:p-4 relative bg-white shadow-sm">
       <div>
@@ -58,7 +60,7 @@ const Navbar = () => {
             {link}
           </Link>
         ))}
-         <Link href='./register' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
+         <Link href='/schedule-appointment' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
       </div>
 
       {/* Mobile Nav */}
@@ -93,7 +95,7 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
-        <Link href='./register' >Register </Link>
+        <Link href='/schedule-appointment' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
       </div>
     </nav>
   );
