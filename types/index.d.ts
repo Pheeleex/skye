@@ -8,6 +8,8 @@ declare type SearchParamProps = {
   declare type Gender = "male" | "female" | "other";
   declare type Location = 'Lagos' | 'Abuja'
   declare type Status = "pending" | "scheduled" | "cancelled";
+  declare type SkinType = 'Oily Skin' | 'Dry Skin' | 'Combnation Skin' | 'Normal Skin' | 'Sensitive Skin'
+
   
   declare interface CreateUserParams {
     name: string;
@@ -18,6 +20,10 @@ declare type SearchParamProps = {
     $id: string;
   }
   
+  declare interface Product extends CreateUserParams {
+    $id: string;
+  }
+
   declare interface AddBookingParams {
     name: string;
     email: string;
@@ -28,6 +34,22 @@ declare type SearchParamProps = {
     schedule: Date;
     note: string | undefined;
   }
+
+  declare interface addProducts{
+    name: string,
+      price: string;
+      category: string;
+      skinConcern: string;
+      skinType: SkinType;
+      description: string;
+      image: FormData | undefined
+      productId: string
+  }
+
+  declare interface Product extends addProducts {
+    $id: string;
+  }
+
 
   declare interface RegisterUserParams extends CreateUserParams {
     userId: string;

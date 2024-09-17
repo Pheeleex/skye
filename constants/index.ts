@@ -110,6 +110,19 @@ export const Treatments= [
 'Medical weightloss', 'Face lift Treatments','Chemical Peels', 'Dermaneedling', 'Consultation'
 ]
 
+export const SkinType= [
+  'Oily Skin', 'Dry Skin', 'Combnation Skin', 'Normal Skin', 'Sensitive Skin'
+]
+
+export const ProductType= [
+  'Cleansers', 'Exfoliants', 'Toners', 'Serums', 'Moisturizers', 'Eye creams'
+]
+
+export const SkinConcern= [
+  'Anti Aging', 'Dryness/Dehydration','Large Pores', 'Acne&Blemish', 'HyperPigmentation', 
+  "Eczema Prone Skin", 'Oil control'
+  ]
+
 export const StatusIcon = {
   scheduled: "/assets/icons/check.svg",
   pending: "/assets/icons/pending.svg",

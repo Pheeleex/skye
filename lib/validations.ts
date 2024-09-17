@@ -30,6 +30,23 @@ export const AppointmentFormValidation = z.object({
   note: z.string().min(2, "Reason must be at least 2 characters")
 });
 
+export const StoreFormValidation = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+ price: z.string(),
+ category: z.string(),
+ skinConcern: z.string(),
+  skinType: z.string(),
+  description: z
+    .string()
+    .min(2, "Reason must be at least 2 characters")
+    .max(500, "Reason must be at most 500 characters"),
+    image: z.custom<File[]>().optional(),
+});
+
+
 export const PatientFormValidation = z.object({
   name: z
     .string()

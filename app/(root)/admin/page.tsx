@@ -1,12 +1,10 @@
+import React from 'react'
 import StatCard from '@/components/StatCard'
-import { columns } from '@/components/table/column'
-import DataTable from '@/components/table/DataTable'
+import { columns } from '@/components/table/columns'
+import { DataTable } from '@/components/table/DataTable'
 import { getRecentAppointmentList } from '@/lib/actions/appointments.actions'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
-
-
 
    
 
@@ -27,6 +25,7 @@ const Admin = async({searchParams}: SearchParamProps) => {
                     className='h-8 w-fit'
                      />
             </Link>
+            <Link href='/admin/store' className="text-16-semibold">Store</Link>
             <p className="text-16-semibold">Admin Dashboard</p>
         </header>
 
@@ -58,7 +57,7 @@ const Admin = async({searchParams}: SearchParamProps) => {
             icon={"/assets/icons/cancelled.svg"}
           />
         </section>
-        <DataTable data={appointments.documents} columns={columns} /> 
+       <DataTable data={appointments.documents} columns={columns} /> 
        
         </main>
     </div>
