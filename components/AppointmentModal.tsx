@@ -8,30 +8,39 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 import { Button } from './ui/button';
-import { Appointment } from '@/types/appwrite.types';
+import AppointmentForm from './forms/AppointmentForm';
+import { Appointment } from '@/types/firebasetypes';
 //import AppointmentForm from './forms/AppointmentsForm';
   
 
 const AppointmentModal = ({
-    patientId,
-    userId,
     appointment,
     type,
+    userId,
+    id,
 }: {
-    patientId: string;
-    userId: string;
-    appointment?: Appointment;
+    id: string,
+    userId: string
+    appointment?: Appointment,
     type: "schedule" | "cancel";
     title: string;
     description: string;
 }) => {
     const [open, setOpen] = useState(false);
+
+    const modalOpen = () => {
+      console.log(userId)
+      console.log(`appointment with ${appointment?.id} opened`)
+    }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>
         <Button variant="ghost" 
         className={`capitalize ${type} === 'schedule` &&
-        'text-green-500'}>
+        'text-green-500'}
+        onClick={modalOpen}
+        >
             {type}
         </Button>
   </DialogTrigger>
@@ -42,13 +51,13 @@ const AppointmentModal = ({
             Please fill in the following details to {type} appointment
           </DialogDescription>
         </DialogHeader>
-        {/*<AppointmentForm
+       <AppointmentForm
+            id={appointment?.id || userId}
             userId={userId}
-            patientId={patientId}
             type={type}
             appointment={appointment}
             setOpen={setOpen}
-        />*/}
+        />
   </DialogContent>
 </Dialog>
   )

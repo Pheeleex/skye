@@ -15,7 +15,9 @@ import { SelectItem } from "../ui/select"
 import { FileUploader } from "../FileUploader"
 import SubmitButton from "../SubmitButton"
 import { StoreFormValidation } from "@/lib/validations"
-import { addProducts } from "@/lib/actions/appointments.actions"
+import { addProducts } from "@/lib/firebase"
+import { nanoid } from "nanoid"
+
 
 
  const ProductForm = () => {
@@ -36,35 +38,20 @@ import { addProducts } from "@/lib/actions/appointments.actions"
 
  async function onSubmit(values: z.infer<typeof StoreFormValidation>) {
     setIsLoading(true);
-    let formData;
-
-    if (
-        values.image &&
-        values.image?.length > 0
-      ) {
-        const blobFile = new Blob([values.image[0]], {
-          type: values.image[0].type,
-        });
-        console.log(blobFile, 'blob')
-        formData = new FormData();
-        formData.append("blobFile", blobFile);
-        formData.append("fileName", values.image[0].name);
-        console.log(formData, 'formData1')
-      }
+    
     try {
       const addedProduct = {
         ...values,
-        productId: ID.unique(),
-        image: formData
+        id: nanoid(),
+        imageFiles: values.imageFiles as File[]
       }
 
       console.log(addedProduct, 'product')
 
         //@ts-ignore
       const productAdded = await addProducts(addedProduct)
-
-      if(productAdded) {
-        console.log('Product added successfully', 'addedProduct')
+      if(productAdded){
+        console.log(`product ${addedProduct.id} has been added`)
       }
     } catch (error) {
       console.log(error);
@@ -167,11 +154,11 @@ import { addProducts } from "@/lib/actions/appointments.actions"
         <CustomFormField
           fieldType={FormFieldType.SKELETON}
           control={form.control}
-          name="image"
+          name="imageFiles"
           label="Upload Image"
           renderSkeleton={(field) => (
             <FormControl>
-             <FileUploader files={field.value} onChange={field.onChange} />
+             <FileUploader files={field.value as File[]} onChange={field.onChange} />
             </FormControl>
           )}
         />

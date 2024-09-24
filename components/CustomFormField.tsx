@@ -12,7 +12,7 @@ import {
 import ReactDatePicker from "react-datepicker";
 import { Input } from "@/components/ui/input"
 import { Control } from 'react-hook-form'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import DatePicker from 'react-datepicker';
@@ -115,7 +115,7 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
                   <div className='flex rounded-md border
                    border-gold-400 bg-white'>
                       <Image
-                        src="public/assets/icons/calender.svg"
+                        src="/assets/icons/calender.svg"
                         height={24}
                         width={24}
                         alt='c'
@@ -123,7 +123,7 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
                         />
                         <FormControl>
                           <DatePicker
-                            selected={field.value}
+                            selected={field.value ? new Date(field.value) : new Date()}
                             onChange={(date) => field.onChange(date)}
                             dateFormat={
                               dateFormat ?? 'MM/dd/yyyy'

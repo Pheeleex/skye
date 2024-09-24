@@ -19,7 +19,7 @@ import {
   } from "@/components/ui/input-otp"
   
 import { usePathname, useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { decryptKey, encryptKey } from '@/lib/utils'
   
   

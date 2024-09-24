@@ -6,7 +6,7 @@ declare type SearchParamProps = {
   };
   
   declare type Gender = "male" | "female" | "other";
-  declare type Location = 'Lagos' | 'Abuja'
+  declare type Location = 'Abuja' | 'Lagos'
   declare type Status = "pending" | "scheduled" | "cancelled";
   declare type SkinType = 'Oily Skin' | 'Dry Skin' | 'Combnation Skin' | 'Normal Skin' | 'Sensitive Skin'
 
@@ -42,8 +42,9 @@ declare type SearchParamProps = {
       skinConcern: string;
       skinType: SkinType;
       description: string;
-      image: FormData | undefined
+      images: string[] | undefined
       productId: string
+      id: string
   }
 
   declare interface Product extends addProducts {
@@ -82,23 +83,30 @@ declare type SearchParamProps = {
     emergencyContactNumber: string;
     allergies: string | undefined;
     currentMedication: string | undefined;
-    facePicture: FormData | undefined;
+    facePicture:  [] | undefined;
     privacyConsent: boolean;
   }
   
   declare type CreateAppointmentParams = {
-    userId: string;
-    patient: string;
+    name: string;
+    email: string;
+    phoneNumber: string;
+    location: Location
+    treatment: string;
     primaryPhysician: string;
     reason: string;
     schedule: Date;
     status: Status;
     note: string | undefined;
+    userId: string;
+    id: string;
   };
   
   declare type UpdateAppointmentParams = {
-    appointmentId: string;
     userId: string;
     appointment: Appointment;
     type: string;
   };
+  
+
+  

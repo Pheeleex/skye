@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import React, { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -16,7 +16,10 @@ export const FileUploader = ({ files, onChange }: FileUploaderProps) => {
     onChange(acceptedFiles);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: true, // Allow multiple file uploads
+  });
 
   return (
     <div {...getRootProps()} className="file-upload">

@@ -21,8 +21,10 @@ import SubmitButton from '../SubmitButton'
 
 import { addPatientDetails } from '@/lib/actions/patients.actions'
 import { FileUploader } from '../FileUploader'
+import { nanoid } from 'nanoid'
+import { addDetails } from '@/lib/firebase'
 
-const DetailsForm = ({user}: { user: User}) => {
+const DetailsForm = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>('')
   // 1. Define your form.
@@ -40,35 +42,18 @@ const DetailsForm = ({user}: { user: User}) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PatientDetailsValidation>) {
     setIsLoading(true);
-    let formData;
-
-    if (
-        values.facePicture &&
-        values.facePicture?.length > 0
-      ) {
-        const blobFile = new Blob([values.facePicture[0]], {
-          type: values.facePicture[0].type,
-        });
-        console.log(blobFile, 'blob')
-        formData = new FormData();
-        formData.append("blobFile", blobFile);
-        formData.append("fileName", values.facePicture[0].name);
-        console.log(formData, 'formData1')
-      }
     try {
       const patientData = {
         ...values,
-        userId: user.$id,
+        userId: nanoid(),
         birthDate: new Date(values.birthDate),
-        facePicture: formData
+        facePicture: values.facePicture
       }
 
       console.log(patientData, 'patientData')
 
         //@ts-ignore
-      const patient = await addPatientDetails(patientData)
-
-      if(patient) router.push(`/patients/${user.$id}/new-appointment`)
+       await addDetails(patientData)
     } catch (error) {
       console.log(error);
       

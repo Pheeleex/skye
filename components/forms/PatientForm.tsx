@@ -1,25 +1,23 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import CustomFormField from "../CustomFormField"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { createUser } from "@/lib/actions/patients.actions"
 import SubmitButton from "../SubmitButton"
-import { AppointmentFormValidation, UserFormValidation } from "@/lib/validations"
+import { AppointmentFormValidation } from "@/lib/validations"
 import { Treatments } from "@/constants"
 import { SelectItem } from "../ui/select"
-import { addSkyeAppointment } from "@/lib/actions/appointments.actions"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Label } from "../ui/label"
+import {  createSkyeAppointment } from "@/lib/firebase"
+import { nanoid } from 'nanoid';
+
 
 export enum FormFieldType {
     INPUT = 'input',
@@ -53,13 +51,13 @@ export enum FormFieldType {
 
   // 2. Define a submit handler.
  async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+  const userId = nanoid()
     setIsLoading(true);
     try {
       const userData = values
       console.log(userData)
-      const user = await addSkyeAppointment(userData) 
-      
-      if(user){router.push(`/patients/${user.$id}/details`)}
+      const appointment = await createSkyeAppointment(userData) 
+      if(appointment){router.push(`/patients/${userId}/details`)}
       console.log('user created')
     } catch (error: any) {
       console.log("Error in creating user:", error);

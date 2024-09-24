@@ -43,7 +43,7 @@ export const StoreFormValidation = z.object({
     .string()
     .min(2, "Reason must be at least 2 characters")
     .max(500, "Reason must be at most 500 characters"),
-    image: z.custom<File[]>().optional(),
+    imageFiles: z.custom<File[]>().optional(),
 });
 
 
@@ -168,6 +168,16 @@ export const PatientDetailsValidation = z.object({
 
 
 export const CreateAppointmentSchema = z.object({
+  name: z
+  .string()
+  .min(2, "Name must be at least 2 characters")
+  .max(50, "Name must be at most 50 characters"),
+email: z.string().email("Invalid email address"),
+phoneNumber: z
+  .string()
+  .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+  treatment: z.string().min(2, "Select at least one treatment"),
+  location: z.enum(['Abuja', 'Lagos']),
   primaryPhysician: z.string().min(2, "Select at least one doctor"),
   schedule: z.coerce.date(),
   reason: z
