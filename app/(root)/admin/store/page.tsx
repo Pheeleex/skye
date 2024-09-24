@@ -1,13 +1,16 @@
-'use client'; 
+'use client'
 import React, { useEffect, useState } from 'react';
 import ProductForm from '@/components/forms/ProductsForm';
-import { getProducts } from '@/lib/firebase';
-import { FilterProps, StoreProps } from '@/types/firebasetypes';
+import { deleteProduct, getProducts } from '@/lib/firebase';
+import { StoreProps } from '@/types/firebasetypes';
 import Image from 'next/image';
+import SearchFilter from '@/components/SearchFilter';
 
 const Page = ({ searchParams }: StoreProps) => {
   const [products, setProducts] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [type, setType] = useState<'create' | 'update'>('create');
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,20 +24,6 @@ const Page = ({ searchParams }: StoreProps) => {
         });
 
         if (fetchedProducts?.product && Array.isArray(fetchedProducts.product)) {
-          // Additional processing for images
-          fetchedProducts.product.forEach((product) => {
-            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-              product.images.map((image) => {
-                if (typeof image === 'string' && image.trim() !== '') {
-                  console.log(image, 'Product images can be fetched');
-                } else {
-                  console.log('Empty or invalid image URL');
-                }
-              });
-            } else {
-              console.log('No valid images found for product:', product.name);
-            }
-          });
           setProducts(fetchedProducts.product);
         } else {
           console.log('Products data is not valid or empty');
@@ -53,12 +42,27 @@ const Page = ({ searchParams }: StoreProps) => {
 
   const isDataEmpty = !Array.isArray(products) || products.length < 1;
 
+  const handleEdit = (product: any) => {
+    setSelectedProduct(product);
+    setType('update');
+    console.log(product.id, type, 'productId and Type');
+  };
+  console.log(selectedProduct)
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Product Form */}
       <div className="max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg mb-8">
-        <ProductForm />
+        <ProductForm
+          type={type}
+          products={selectedProduct} // Correct prop name
+          productId={selectedProduct?.id}
+        />
       </div>
+
+    <div>
+      <SearchFilter />
+    </div>
 
       {/* Loading state */}
       {loading ? (
@@ -73,10 +77,10 @@ const Page = ({ searchParams }: StoreProps) => {
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (
             <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
-              {product.images && product.images.length > 0 && (
+              {product.images?.length > 0 && (
                 <div className="w-full h-56 relative">
                   <Image
-                    src={product.images[0] || '/path/to/placeholder.png'}
+                    src={product.images[0] || '/placeholder.png'}  // Ensure placeholder exists
                     alt={product.name}
                     className="rounded-t-lg"
                     style={{ objectFit: 'cover' }}
@@ -99,6 +103,7 @@ const Page = ({ searchParams }: StoreProps) => {
                   style={{ objectFit: 'cover' }}
                   width={50}
                   height={50}
+                  onClick={() => deleteProduct(product.id!, product.name ?? '', setProducts)}
                 />
                 <Image
                   src="/assets/icons/edit.svg"
@@ -107,6 +112,7 @@ const Page = ({ searchParams }: StoreProps) => {
                   style={{ objectFit: 'cover' }}
                   width={50}
                   height={50}
+                  onClick={() => handleEdit(product)} // Pass the correct product
                 />
               </div>
             </div>

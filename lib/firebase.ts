@@ -12,6 +12,8 @@ import { Firestore, addDoc, collection,limit as firestoreLimit,
     updateDoc,
     where,
     startAfter,
+    doc,
+    deleteDoc,
   } from "firebase/firestore"
   import { deleteObject, getDownloadURL, getStorage, listAll, ref, uploadBytes, } from "firebase/storage"
 import { promise } from "zod";
@@ -278,12 +280,37 @@ export const storage = getStorage(app)
   }
 };
 
-export const updateProducts = () =>{
+export const updateProducts = async (productId: string, updatedData: Partial<Products>): Promise<void> => {
+  try {
+    const cleanedData = Object.fromEntries(Object.entries(updatedData).filter(([_, v]) => v !== undefined && v !== ""));
+    const productRef = doc(db, 'products', productId);
+    await updateDoc(productRef, cleanedData);
+    console.log('Product updated successfully', productId);
+  } catch (error) {
+    console.error('Error updating product: ', error);
+    throw error;
+  }
+};
 
-}
 
-export const deleteProducts = () => {
-  
+
+
+export const deleteProduct = async(productId: string, ImagePath:string, setProducts:SetProducts): Promise<void> => {
+  try {
+    await deleteDoc(doc(db, 'products', productId))
+
+    //Delete associated property image from Firebase storage
+    const imageListRef = ref(storage, `${ImagePath}/`);
+    const imageList = await listAll(imageListRef);
+    const deletePromises = imageList.items.map((item) => deleteObject(ref(storage, item.fullPath)));
+
+    await Promise.all(deletePromises);
+
+    setProducts((prevProd) => prevProd.filter((prod) => prod.id !== productId ));
+    console.log(`Car with id ${productId} deleted successfully`)
+  } catch (error) {
+    console.error(`Error deleting car with id ${productId}:`, error)
+  }
 }
 
 

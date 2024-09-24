@@ -15,44 +15,75 @@ import { SelectItem } from "../ui/select"
 import { FileUploader } from "../FileUploader"
 import SubmitButton from "../SubmitButton"
 import { StoreFormValidation } from "@/lib/validations"
-import { addProducts } from "@/lib/firebase"
+import { addProducts, updateProducts } from "@/lib/firebase"
 import { nanoid } from "nanoid"
+import { Products } from "@/types/firebasetypes"
 
 
 
- const ProductForm = () => {
+ const ProductForm = ({
+  type,
+  products,
+  productId,
+ }: {
+  type: "create" | "update",
+  products?: Products,
+  productId: string
+ }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null);
+    console.log(`products in product form ${products}, ${products?.name}, ${products?.id}`)
   // 1. Define your form.
+
   const form = useForm<z.infer<typeof StoreFormValidation>>({
     resolver: zodResolver(StoreFormValidation),
     defaultValues: {
-      name: '',
-      price: '',
-      category: '',
-      skinConcern: '',
-      description: '',
+      name: products?.name || '',
+      price: products?.price || '',
+      category: products?.category || '',
+      skinType: products?.skinType as SkinType,
+      imageFiles: products?.imageFiles as File[],
+      skinConcern: products?.skinConcern || '',
+      description: products?.description || '',
     },
   })
   const router = useRouter()
 
  async function onSubmit(values: z.infer<typeof StoreFormValidation>) {
+
+  let status: string;
+  switch (type) {
+    case 'update':
+      status = 'update';
+      break;
+    case 'create':
+      status = 'create';
+      break;
+  }
+
+
     setIsLoading(true);
     
     try {
-      const addedProduct = {
-        ...values,
-        id: nanoid(),
-        imageFiles: values.imageFiles as File[]
-      }
-
-      console.log(addedProduct, 'product')
-
-        //@ts-ignore
-      const productAdded = await addProducts(addedProduct)
-      if(productAdded){
-        console.log(`product ${addedProduct.id} has been added`)
-      }
+      if(type === "create"){
+        const addedProduct = {
+          ...values,
+          id: nanoid(),
+          imageFiles: values.imageFiles as File[]
+        }
+  
+        console.log(addedProduct, 'product')
+  
+          //@ts-ignore
+        const productAdded = await addProducts(addedProduct)
+      } else {
+        const productToUpdate = {
+          productId: products,
+          ...values
+        };
+        
+    const updatedProducts = await updateProducts(productId, productToUpdate)
+      };
     } catch (error) {
       console.log(error);
       
@@ -65,6 +96,10 @@ import { nanoid } from "nanoid"
           setError(String(error));
           setIsLoading(false)
       }
+  }
+  finally {
+    setIsLoading(false);
+    form.reset();  // Reset form after successful submission
   }
   
   }
@@ -173,7 +208,7 @@ import { nanoid } from "nanoid"
                 placeholder="Solves ABC for XYZ in 123"
               />
             </div>
-       <SubmitButton isLoading={isLoading}>Add Product</SubmitButton>
+       <SubmitButton isLoading={isLoading}>{type === "create" ? "Add Products" : "Update Products"}</SubmitButton>
       </form>
     </Form>
   )

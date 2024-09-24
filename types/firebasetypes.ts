@@ -1,4 +1,7 @@
+import { Dispatch, SetStateAction } from "react";
+
 export type Status = "pending" | "scheduled" | "cancelled";
+export type ProductStatus = "create" | "update";
 
 export interface Appointment {
     name: string;
@@ -36,9 +39,12 @@ export interface Appointment {
       imageFiles: File[]
       images?: string[];
       id: string
+      status: ProductStatus
   }
+
 
 
   export interface StoreProps {
     searchParams: FilterProps;
   }
+export type SetCars = Dispatch<SetStateAction<Products[]>>
