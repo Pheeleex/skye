@@ -16,11 +16,9 @@ import { Appointment } from '@/types/firebasetypes';
 const AppointmentModal = ({
     appointment,
     type,
-    userId,
-    id,
+    appointmentId,
 }: {
-    id: string,
-    userId: string
+    appointmentId: string,
     appointment?: Appointment,
     type: "schedule" | "cancel";
     title: string;
@@ -28,18 +26,14 @@ const AppointmentModal = ({
 }) => {
     const [open, setOpen] = useState(false);
 
-    const modalOpen = () => {
-      console.log(userId)
-      console.log(`appointment with ${appointment?.id} opened`)
-    }
+   
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>
         <Button variant="ghost" 
-        className={`capitalize ${type} === 'schedule` &&
-        'text-green-500'}
-        onClick={modalOpen}
+        className={`capitalize ${type === 'schedule' ? 'text-green-500' : ''}`}
+
         >
             {type}
         </Button>
@@ -52,8 +46,7 @@ const AppointmentModal = ({
           </DialogDescription>
         </DialogHeader>
        <AppointmentForm
-            id={appointment?.id || userId}
-            userId={userId}
+            appointmentId={appointment?.id}
             type={type}
             appointment={appointment}
             setOpen={setOpen}

@@ -17,7 +17,7 @@ import { Firestore, addDoc, collection,limit as firestoreLimit,
   } from "firebase/firestore"
   import { deleteObject, getDownloadURL, getStorage, listAll, ref, uploadBytes, } from "firebase/storage"
 import { promise } from "zod";
-import { FilterProps, Products } from "@/types/firebasetypes";
+import { FilterProps, Products, SetProducts } from "@/types/firebasetypes";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -42,91 +42,6 @@ export const storage = getStorage(app)
 
 
 
-
-{/*export const addSkyeAppointment = async (appointment: AddBookingParams) => {
-    try {
-      const addAppointment = await databases.createDocument(
-        DATABASE_ID!,
-        SKYE_APPOINTMENT_COLLECTION_ID!,
-        ID.unique(),
-        appointment,
-      );
-  
-      return parseStringify(addAppointment);
-    } catch (error) {
-      console.error("An error occurred while creating a new appointment:", error);
-      // Re-throw the error so it can be handled by the caller
-      throw error;
-    }
-  }*/}
-  
-
-  export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmentParams) => {
-    try {
-      const appointmentRef = collection(db, 'skyeAppointment');
-      
-      // Include the createdAt field with the current timestamp
-      const appointmentWithTimestamp = {
-        ...appointment,
-        id,
-        createdAt: Timestamp.fromDate(new Date())
-      };
-  
-      // Add the document to Firestore
-      const docRef = await addDoc(appointmentRef, appointmentWithTimestamp);
-  
-      // Log the document ID and other details
-      console.log('Appointment added successfully:', docRef.id);
-      console.log('Document Reference:', docRef);
-      
-      // Return the document ID or other useful information
-      return {
-        ...appointmentWithTimestamp,
-        id: docRef.id
-      };
-    } catch (error) {
-      console.error('Error adding appointment:', error);
-      throw error;
-    }
-  };
-
-
-
-  export const getAppointmentt = async () => {
-    try {
-      const appointmentsRef = collection(db, 'skyeAppointment');
-      let appointmentsQuery = query(appointmentsRef, orderBy("createdAt"));
-      console.log('query object', appointmentsQuery)
-      
-      console.log('Query Object:', appointmentsQuery);
-  
-      const appointmentSnapshot = await getDocs(appointmentsQuery);
-  
-      // Check the number of documents fetched
-      console.log('Documents Count:', appointmentSnapshot.size);
-  
-      // Log the raw snapshot
-      console.log('Raw Firebase Snapshot:', appointmentSnapshot);
-  
-      // Map and log each document's data
-      const appointmentData = appointmentSnapshot.docs.map((doc) => {
-        console.log('Document Data:', doc.data());
-        console.log('Document ID:', doc.id);
-  
-        return {
-          ...doc.data(),
-          appointmentId: doc.id,
-        };
-      });
-  
-      console.log('Mapped Appointment Data:', appointmentData);
-      return appointmentData;
-    } catch (error) {
-      console.error('Firestore Query Error:', error);
-      throw error;
-    }
-  };
-  
 
   export const addDetails = async({
     name,
@@ -206,79 +121,59 @@ export const storage = getStorage(app)
   
 
 
- export const getProducts = async (filters: FilterProps, lastVisible: any = null): Promise<{ product: Products[],  lastVisible: any }> => {
-  try {
-    const { skinType, skinConcern, category, limit:fetchLimit } = filters;
-    const productCollectionRef = collection(db, "products");
-    let productQuery = query(productCollectionRef, orderBy("id", "desc"));
-
-    // Apply the manufacturer filter if it's provided
-    if (category) {
-      productQuery = query(productQuery, where("category", "==", category.toLowerCase()));
-      console.log('manufacturer query', productQuery)
+  export const getProducts = async (filters: FilterProps, lastVisible: any = null): Promise<{ product: Products[],  lastVisible: any }> => {
+    try {
+      const { skinType, skinConcern, category, limit: fetchLimit } = filters;
+      const productCollectionRef = collection(db, "products");
+      
+      // Start with the basic query and apply filters conditionally
+      let productQuery = query(productCollectionRef, orderBy("id", "desc"));
+  
+      // Apply the category filter if provided
+      if (category) {
+        productQuery = query(productQuery, where("category", "==", category));
+        console.log('Category filter applied:', category);
+      }
+  
+      // Apply the skinType filter if provided
+      if (skinType) {
+        productQuery = query(productQuery, where("skinType", "==", skinType));
+        console.log('Skin Type filter applied:', skinType);
+      }
+  
+      // Apply the skinConcern filter if provided
+      if (skinConcern) {
+        productQuery = query(productQuery, where("skinConcern", "==", skinConcern));
+        console.log('Skin Concern filter applied:', skinConcern);
+      }
+  
+      // For pagination, apply the lastVisible filter if provided
+      if (lastVisible) {
+        productQuery = query(productQuery, startAfter(lastVisible));
+      }
+  
+      // Apply the limit to restrict the number of documents retrieved
+      if (fetchLimit) {
+        productQuery = query(productQuery, firestoreLimit(fetchLimit));
+      }
+  
+      const querySnapshot = await getDocs(productQuery);
+      console.log(`Number of products found: ${querySnapshot.docs.length}`);
+  
+      const newLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+      const productData = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      })) as Products[];
+  
+      return { product: productData, lastVisible: newLastVisible };
+      
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return { product: [], lastVisible: null };
     }
-
-    if (skinType) {
-      productQuery = query(productQuery, where("skinType", "==", skinType.toLowerCase()));
-      console.log('manufacturer query', skinType)
-    }
-
-    // Apply the model filter if it's provided
-    if (skinConcern) {
-      productQuery = query(productQuery, where("skinConcern", "==", skinConcern));
-    }
-
-    // Start after the last visible document for pagination
-    if (lastVisible) {
-      productQuery = query( productQuery, startAfter(lastVisible));
-    }
-
-    // Apply the limit to the number of documents retrieved
-   if(fetchLimit){
-    productQuery = query( productQuery, firestoreLimit(fetchLimit));
-   }
-
-    const querySnapshot = await getDocs(productQuery);
-
-    console.log(`Number of products found: ${querySnapshot.docs.length}`);
-
-    const newLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-
-    const productData = querySnapshot.docs.map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-    })) as Products[];
-
-    const productWithImages = await Promise.all(
-      productData.map(async (product) => {
-        let images: string[] = [];
-        const imageListRef = ref(storage, `/products/${product.name}-${product.id}`);
-       if(imageListRef){
-        console.log('found image list ref','listtt')
-       }
-        try {
-          const imageList = await listAll(imageListRef);
-          images = await Promise.all(
-            imageList.items.map(async (item) => {
-              const url = await getDownloadURL(item);
-              return url;
-            })
-          );
-          console.log(images, 'the images')
-        } catch (error) {
-          console.error(`Error fetching images for product ${product.id}:`, error);
-        }
-
-        return { ...product, images };
-      })
-    );
-
-    return { product: productWithImages, lastVisible: newLastVisible };
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return { product: [], lastVisible };
-  }
-};
+  };
+  
 
 export const updateProducts = async (productId: string, updatedData: Partial<Products>): Promise<void> => {
   try {

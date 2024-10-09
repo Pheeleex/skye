@@ -3,7 +3,22 @@ import { Dispatch, SetStateAction } from "react";
 export type Status = "pending" | "scheduled" | "cancelled";
 export type ProductStatus = "create" | "update";
 
+export interface Patient{
+  userId: string;
+    birthDate: Date;
+    gender: Gender;
+    address: string;
+    occupation: string;
+    emergencyContactName: string;
+    emergencyContactNumber: string;
+    allergies: string | undefined;
+    currentMedication: string | undefined;
+    facePicture:  [] | undefined;
+    privacyConsent: boolean;
+}
+
 export interface Appointment {
+    patient: Patient,
     name: string;
     email: string;
     phoneNumber: string;
@@ -18,7 +33,14 @@ export interface Appointment {
     cancellationReason: string | null;
     createdAt: Date
     id: string
+    userId: string
   }
+
+export interface UpdateAppointmentParams {
+    appointmentId: string;
+    appointment: Appointment;
+    type: string;
+  };
 
   
 
@@ -27,6 +49,9 @@ export interface Appointment {
       skinConcern: string;
       skinType: SkinType;
       limit: number
+      id?: string
+      formType?:ProductStatus
+      productId?:string
   }
 
   export interface Products{
@@ -47,4 +72,4 @@ export interface Appointment {
   export interface StoreProps {
     searchParams: FilterProps;
   }
-export type SetCars = Dispatch<SetStateAction<Products[]>>
+export type SetProducts = Dispatch<SetStateAction<Products[]>>

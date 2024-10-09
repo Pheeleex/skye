@@ -21,7 +21,8 @@ import { SelectTrigger } from '@radix-ui/react-select';
 import { Select, SelectContent, SelectValue } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { Checkbox } from './ui/checkbox';
-import { FormFieldType } from './forms/PatientForm';
+import { FormFieldType } from './forms/AppointmentForm';
+
 
 interface CustomProps{
     control: Control<any>,

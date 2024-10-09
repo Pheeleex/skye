@@ -10,9 +10,9 @@ import { string, z } from "zod"
 import { PatientDetailsValidation } from '@/lib/validations'
 import { GenderOptions, PatientDetailsDefaultValues } from '@/constants'
 import CustomFormField from '../CustomFormField'
-import { FormFieldType } from './PatientForm'
+
 import { useForm } from 'react-hook-form'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
@@ -23,10 +23,12 @@ import { addPatientDetails } from '@/lib/actions/patients.actions'
 import { FileUploader } from '../FileUploader'
 import { nanoid } from 'nanoid'
 import { addDetails } from '@/lib/firebase'
+import { FormFieldType } from './AppointmentForm'
 
 const DetailsForm = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>('')
+  const [success, setSuccess] = useState<boolean>(false)
   // 1. Define your form.
   const form = useForm<z.infer<typeof PatientDetailsValidation>>({
     resolver: zodResolver(PatientDetailsValidation),
@@ -38,14 +40,14 @@ const DetailsForm = () => {
     },
   })
   const router = useRouter()
-
+  const { userId } = useParams();
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PatientDetailsValidation>) {
     setIsLoading(true);
     try {
       const patientData = {
         ...values,
-        userId: nanoid(),
+        userId: userId ?? nanoid(), // Use userId from URL or fallback to a new one
         birthDate: new Date(values.birthDate),
         facePicture: values.facePicture
       }
@@ -54,6 +56,16 @@ const DetailsForm = () => {
 
         //@ts-ignore
        await addDetails(patientData)
+
+        // Set success to true to show success message
+      setSuccess(true)
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setSuccess(false)
+        // Redirect to the dashboard with the userId
+        router.push(`/patients/${patientData.userId}/dashboard`)
+      }, 3000)
     } catch (error) {
       console.log(error);
       
@@ -79,6 +91,21 @@ const DetailsForm = () => {
         <h1 className="header">Welcome 👋</h1>
         <p className="text-dark-700">Let us know more about yourself.</p>
       </section>
+
+          {/* Success and Error Messages */}
+        {success && (
+          <div className="success-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 
+          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out">
+            Details submitted successfully!
+          </div>
+        )}
+        {error && (
+          <div className="error-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 
+          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out">
+            {error}
+          </div>
+        )}
+
 
       <section className="space-y-6">
         <div className="mb-9 space-y-1">

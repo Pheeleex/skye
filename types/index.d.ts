@@ -9,6 +9,8 @@ declare type SearchParamProps = {
   declare type Location = 'Abuja' | 'Lagos'
   declare type Status = "pending" | "scheduled" | "cancelled";
   declare type SkinType = 'Oily Skin' | 'Dry Skin' | 'Combnation Skin' | 'Normal Skin' | 'Sensitive Skin'
+  declare type consultationType = 'Online Consultation' | 'In person consultation'
+  
 
   
   declare interface CreateUserParams {
@@ -98,15 +100,11 @@ declare type SearchParamProps = {
     schedule: Date;
     status: Status;
     note: string | undefined;
-    userId: string;
     id: string;
+    createdAt: Date
   };
   
-  declare type UpdateAppointmentParams = {
-    userId: string;
-    appointment: Appointment;
-    type: string;
-  };
+ 
   
 
   

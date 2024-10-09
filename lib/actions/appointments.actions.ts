@@ -20,27 +20,81 @@ import {
 import { formatDateTime, parseStringify } from "../utils";
 import App from "next/app";
 import { InputFile } from "node-appwrite/file";
-import { collection, doc, DocumentData, getDocs, orderBy, query, QueryDocumentSnapshot, Timestamp, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, DocumentData, getDocs, orderBy, query, QueryDocumentSnapshot, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Appointment } from "@/types/firebasetypes";
+import twilio from 'twilio';
+
+
+const accountSid = process.env.TW_ACCOUNT_SID; // Your Account SID from .env.local
+const authToken = process.env.AUTH_TOKEN; // Your Auth Token from .env.local
+const client = twilio(accountSid, authToken);
 
 
 
 
-export const getAppointment = async (appointmentId: string) =>{
+export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmentParams) => {
   try {
-    const appointment = await databases.getDocument(
-      DATABASE_ID!,
-      APPOINTMENT_COLLECTION_ID!,
-      appointmentId,
-    )
-    console.log(appointment, 'getAppointment', appointmentId)
-    return parseStringify(appointment)
+    const appointmentRef = collection(db, 'skyeAppointment');
+    
+    // Include the createdAt field with the current timestamp
+    const appointmentWithTimestamp = {
+      ...appointment,
+      id,
+    };
+
+    // Add the document to Firestore
+    const docRef = await addDoc(appointmentRef, appointmentWithTimestamp);
+
+    // Log the document ID and other details
+    console.log('Appointment added successfully:', docRef.id);
+    console.log('Document Reference:', docRef);
+
+    // Send SMS notification to the admin
+    const adminPhoneNumber = process.env.ADMIN_PHONE_NUMBER;
+    const userName = appointment.name;  // Retrieve the name of the user who created the appointment
+
+
+    try {
+      const message = await client.messages.create({
+        body: `An appointment has been created by ${userName}. Please go and confirm availability.`,
+        from: appointment.phoneNumber,  // Replace with your Twilio number
+        to: '+2349074358404'  // Admin's phone number
+      });
+
+      console.log('SMS sent successfully:', message.sid);
+    } catch (smsError) {
+      // Handle errors related to Twilio SMS sending
+      console.error('Error sending SMS:', smsError);
+
+      // Optionally log the error in Firestore or another logging service
+      // For example, you could create an error log in Firestore:
+      const errorRef = collection(db, 'smsErrors');
+      await addDoc(errorRef, {
+        error: smsError.message,
+        timestamp: new Date().toISOString(),
+        appointmentId: docRef.id,
+        username: userName
+      });
+
+      // Return a response with error details if necessary
+      return {
+        error: 'SMS not sent. Please check Twilio configuration.',
+        appointmentId: docRef.id,
+        username: userName
+      };
+    }
    
+    // Return the document ID or other useful information
+    return {
+      ...appointmentWithTimestamp,
+      id: docRef.id
+    };
   } catch (error) {
-    console.log(error)
+    console.error('Error adding appointment:', error);
+    throw error;
   }
-}
+};
 
 
 // Function to get and count appointments from Firestore
@@ -103,101 +157,6 @@ export const getAppointmentList = async (appointmentId: string) => {
 
 
 
-{/** export const getAppointmentList = async() => {
-  try {
-    const appointmentsRef = collection(db, 'skyeAppointment');
-    const appointmentsQuery = query(appointmentsRef, orderBy("id", "desc"));
-    const appointmentSnapshot = await getDocs(appointmentsQuery);
-
-    const initialCounts = {
-      scheduledCount: 0,
-      pendingCount: 0,
-      cancelledCount: 0,
-    };
-
-    const counts = appointmentSnapshot.docs.reduce((acc, doc: QueryDocumentSnapshot<DocumentData>) => {
-      const appointment = doc.data();
-
-      // Convert Firestore Timestamps to Date objects
-      if (appointment.schedule && appointment.schedule.toDate) {
-        appointment.schedule = appointment.schedule.toDate();  // Convert to Date
-      }
-
-      if (appointment.createdAt && appointment.createdAt.toDate) {
-        appointment.createdAt = appointment.createdAt.toDate();  // Convert to Date
-      }
-
-      // Increment counts based on status
-      if (appointment.status === 'scheduled') {
-        acc.scheduledCount += 1;
-      } else if (appointment.status === 'pending') {
-        acc.pendingCount += 1;
-      } else if (appointment.status === 'cancelled') {
-        acc.cancelledCount += 1;
-      }
-
-      return acc;
-    }, initialCounts);
-
-    const data = {
-      totalCount: appointmentSnapshot.size,
-      ...counts,
-      documents: appointmentSnapshot.docs.map(doc => {
-        const appointmentData = doc.data();
-        
-        // Ensure all Timestamps are converted before returning
-        return {
-          appointmentId: doc.id,
-          ...appointmentData,
-          schedule: appointmentData.schedule?.toDate(), // Convert if exists
-          createdAt: appointmentData.createdAt?.toDate(), // Convert if exists
-        };
-      }),
-    };
-
-    return data;
-  } catch (error) {
-    console.log("Error fetching appointments:", error);
-    return null;
-  }
-};  **/}
-
-
-
-//  UPDATE APPOINTMENT
-export const updateAppointment = async ({
-  appointment,
-  type,
-  
-}: UpdateAppointmentParams) => {
-  try {
-    // Update appointment to scheduled -> https://appwrite.io/docs/references/cloud/server-nodejs/databases#updateDocument
-    const updatedAppointment = await databases.updateDocument(
-      DATABASE_ID!,
-      APPOINTMENT_COLLECTION_ID!,
-      appointment
-    );
-
-    if (!updatedAppointment) throw Error;
-
-    //SMS NOTIFICATION
-
-    const smsMessage = `Greetings from CarePulse. ${type === "schedule" ? `Your 
-    appointment is confirmed for ${formatDateTime(appointment.schedule!).dateTime} 
-    with Dr. ${appointment.primaryPhysician}` : `We regret to inform that 
-    your appointment for ${formatDateTime(appointment.schedule!).dateTime} 
-    is cancelled. Reason:  ${appointment.cancellationReason}`}.`;
-    //await sendSMSNotification(appointmentId, smsMessage);
-
-
-    revalidatePath("/admin");
-    return parseStringify(updatedAppointment);
-  } catch (error) {
-    console.error("An error occurred while scheduling an appointment:", error);
-  }
-};
-
-
 
 
 
@@ -212,13 +171,13 @@ export const updateAppointments = async (userId: string, appointmentToUpdate: { 
     const appointmentRef = doc(db, 'skyeAppointment', appointmentId); // Reference the specific document
 
     // Update the document with new values
-    await updateDoc(appointmentRef, {
+    const updatedAppointment = await updateDoc(appointmentRef, {
       ...appointmentToUpdate.appointment,
       // Add any other fields to update if necessary
     });
-
     console.log('Appointment updated successfully:', appointmentId);
-    return true; // Return true or any relevant data indicating success
+    revalidatePath('/admin')
+    return updatedAppointment
   } catch (error) {
     console.error('Error updating appointment:', error);
     throw error; // Propagate the error

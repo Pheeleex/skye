@@ -1,38 +1,85 @@
+'use client'
 import React from 'react'
-import CustomFormField from './CustomFormField'
-import { FormFieldType } from './forms/PatientForm'
-import { Form } from './ui/form'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { DropdownMenu, 
+    DropdownMenuContent, 
+    DropdownMenuItem, 
+    DropdownMenuLabel, 
+    DropdownMenuSeparator, 
+    DropdownMenuTrigger } from './ui/dropdown-menu'
+import { ProductType, SkinConcern, SkinType } from '@/constants'
+import { Products, StoreProps } from '@/types/firebasetypes'
+import { useRouter } from 'next/navigation'
 
-// Correcting the validation schema with z.object
-const SearchFormValidation = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters"),
-})
-
-const SearchFilter = () => {
-    // Fixing the useForm hook to use z.infer and zodResolver correctly
-    const form = useForm<z.infer<typeof SearchFormValidation>>({
-        resolver: zodResolver(SearchFormValidation),
-        defaultValues: {
-            name: ""
-        },
-      })
-      
+const SearchFilter = ({searchParams}: StoreProps) => {
+  const router = useRouter()
+  const updateSearchParams = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams as any)
+    if(value){
+      params.set(key, value)
+      console.log(key, value)
+    }
+    else{
+      params.delete(key)
+    }
+    router.push(`?${params.toString()}`);
+  }
   return (
-    <div className='flex items-center justify-center m-16'>
-        <Form {...form}>
-        <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="name"
-            label="search product"
-            placeholder="XYZ SPF"
-        />
-        </Form>
+    <div className='flex justify-center items-center gap-40 m-20'>
+        <DropdownMenu>
+            <DropdownMenuTrigger>Skin Type</DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Skin Type</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {
+        SkinType.map((type) => (
+            <DropdownMenuItem
+              key={type}
+              onClick={() => updateSearchParams('skinType', type)}
+            >
+              {type}
+            </DropdownMenuItem>
+        ))
+    }
+    
+  </DropdownMenuContent>
+</DropdownMenu>
+
+<DropdownMenu>
+            <DropdownMenuTrigger>Product Type</DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Product Type</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {
+        ProductType.map((type) => (
+            <DropdownMenuItem
+              key={type}
+              onClick={() => updateSearchParams('category', type)}
+            >
+              {type}
+            </DropdownMenuItem>
+        ))
+    }
+    
+  </DropdownMenuContent>
+</DropdownMenu>
+
+<DropdownMenu>
+            <DropdownMenuTrigger>Skin Concern</DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuLabel>Skin Concern</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {
+        SkinConcern.map((concern) => (
+            <DropdownMenuItem
+              key={concern}
+              onClick={()=>updateSearchParams('skinConcern', concern)}
+            >{concern}</DropdownMenuItem>
+        ))
+    }
+    
+  </DropdownMenuContent>
+</DropdownMenu>
+
     </div>
   )
 }

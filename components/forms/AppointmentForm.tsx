@@ -8,35 +8,48 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Form, FormControl } from "../ui/form"
 import CustomFormField from "../CustomFormField"
-import { FormFieldType } from "./PatientForm"
 import { Doctors, Treatments } from "@/constants"
 import { SelectItem } from "../ui/select"
 import Image from "next/image"
 import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import SubmitButton from "../SubmitButton"
-import { createSkyeAppointment } from "@/lib/firebase"
-import { updateAppointment, updateAppointments } from "@/lib/actions/appointments.actions"
+import {  createSkyeAppointment, updateAppointments } from "@/lib/actions/appointments.actions"
 import { nanoid } from "nanoid"
+
+
+
+
+export enum FormFieldType {
+  INPUT = 'input',
+  TEXTAREA = 'textarea',
+  PHONE_INPUT = 'phoneInput',
+  CHECKBOX = 'checkbox',
+  DATE_PICKER = 'datePicker',
+  SELECT = 'select',
+  SKELETON= 'skeleton'
+}
+
 
 const AppointmentForm = ({
   type,
   appointment,
+  appointmentId,
   userId,
-  id,
   setOpen
 }: {
   type: "create" | "cancel" | "schedule",
+  userId?: string
   appointment?: Appointment,
-  userId: string
-  id: string
+  appointmentId?: string
   setOpen?: (open: boolean) => void
 }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState<SetStateAction<string>>('')
   const AppointmentFormValidation = getAppointmentSchema(type)
 
-  console.log(appointment, 'appointment', userId)
+
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
@@ -71,23 +84,33 @@ const AppointmentForm = ({
         break;
     }
 
+    console.log(type)
+
     try {
       if (type === 'create') {
         const appointmentData = {
           ...values,
           id: nanoid(),
           status: status as Status,
+          createdAt: new Date()
         }
         console.log(appointmentData)
+        
         const appointment = await createSkyeAppointment(appointmentData);
-
+        if(appointment){
+          router.push(`./success/${userId}`)
+        }
 
         if (appointment) {
           form.reset();
+          setSuccess(true); // Show success message
+          setTimeout(() => setSuccess(false), 3000); // Hide after 3 seconds
+          router.push(`/patients/${appointmentData.id}/details`);
         } else {
           setError(error);
         }
       } else {
+        console.log(type)
         const appointmentToUpdate = {
           appointment: {
             id: appointment?.id,
@@ -98,7 +121,7 @@ const AppointmentForm = ({
           },
           type,
   }
-    const updatedAppointment = await updateAppointments(userId, appointmentToUpdate)
+    const updatedAppointment = await updateAppointments(appointmentId!, appointmentToUpdate)
     if(updatedAppointment){
       setOpen && setOpen(false);
       form.reset();
@@ -117,11 +140,8 @@ const AppointmentForm = ({
     case "cancel":
       buttonLabel = "Cancel Appointment";
       break;
-    case "create":
-      buttonLabel = "Create Appointment";
-      break;
     case "schedule":
-      buttonLabel = "Schedule Appointment";
+      buttonLabel = "Create Appointment";
       break;
     default:
       buttonLabel = "Submit Appointment";
@@ -142,6 +162,13 @@ const AppointmentForm = ({
         {
           type == "create" && (
             <>
+            {success && (
+              <div className=" success-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 
+            text-white py-2 px-4 rounded-lg shadow-lg transition-opacity 
+              duration-500 ease-in-out">
+                Appointment booked successfully!
+              </div>
+            )}
               <div>
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
@@ -209,6 +236,31 @@ const AppointmentForm = ({
                     )}
                   />
                 </div>
+
+                <CustomFormField
+                    fieldType={FormFieldType.SKELETON}
+                    control={form.control}
+                    name="consultationType"
+                    label="Type of consultation"
+                    renderSkeleton={(field) => (
+                      <FormControl>
+                        <RadioGroup
+                          className="flex h-11 gap-6 xl:justify-between"
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          {['Online Consultation', 'In person consultation'].map((option, i) => (
+                            <div key={option + i} className="radio-group gold-border">
+                              <RadioGroupItem value={option} id={option} />
+                              <Label htmlFor={option} className="cursor-pointer text-gold-400">
+                                {option}
+                              </Label>
+                            </div>
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+                    )}
+                  />
               </div>
 
               <div className="flex flex-col">
@@ -373,7 +425,8 @@ const AppointmentForm = ({
 
         <SubmitButton
           isLoading={isLoading}
-          className={`${type === 'cancel' ? 'shad-danger-btn' : 'shad-primary-btn'} w-full`}
+          className={`${type === 'cancel' ? 'shad-danger-btn'
+           : 'shad-primary-btn'} w-full`}
         >
           {buttonLabel}
         </SubmitButton>

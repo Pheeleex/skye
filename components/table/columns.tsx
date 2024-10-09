@@ -12,6 +12,7 @@ import { Appointment } from "@/types/firebasetypes"
 
 export const columns: ColumnDef<Appointment>[] = [
     {
+        id: "id", 
         header: 'ID',
         cell: ({row}) => <p className="text-14-medium">{row.index + 1}</p>
     },
@@ -69,16 +70,15 @@ export const columns: ColumnDef<Appointment>[] = [
       return(
         <div className="flex gap-1">
         <AppointmentModal
-            id={appointment.id}
-            userId={appointment.id}
+            appointmentId={appointment.id}
             appointment={appointment}
             type="schedule"
             title="Schedule Appointment"
             description="Please confirm the following details to schedule."
           />
           <AppointmentModal
-             id={appointment.id}
-             userId={appointment.id}
+             appointmentId={appointment.id}
+             appointment={appointment}
             type="cancel"
             title="Cancel Appointment"
             description="Are you sure you want to cancel your appointment?"

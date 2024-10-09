@@ -178,6 +178,7 @@ phoneNumber: z
   .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   treatment: z.string().min(2, "Select at least one treatment"),
   location: z.enum(['Abuja', 'Lagos']),
+  consultationType: z.enum(['Online Consultation', 'In person consultation']),
   primaryPhysician: z.string().min(2, "Select at least one doctor"),
   schedule: z.coerce.date(),
   reason: z

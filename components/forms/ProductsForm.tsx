@@ -1,141 +1,144 @@
 "use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { number, z } from "zod"
-import { useState } from "react"
+import { z } from "zod"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ID } from "node-appwrite"
+import { nanoid } from "nanoid"
+import { Products } from "@/types/firebasetypes"
+import { StoreFormValidation } from "@/lib/validations"
+import { addProducts, updateProducts } from "@/lib/firebase"
 import { Form, FormControl } from "../ui/form"
 import CustomFormField from "../CustomFormField"
-import { FormFieldType } from "./PatientForm"
+
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
-import { ProductType, SkinConcern, SkinType } from "@/constants"
+import { SkinConcern, SkinType, ProductType } from "@/constants"
 import { Label } from "../ui/label"
 import { SelectItem } from "../ui/select"
 import { FileUploader } from "../FileUploader"
 import SubmitButton from "../SubmitButton"
-import { StoreFormValidation } from "@/lib/validations"
-import { addProducts, updateProducts } from "@/lib/firebase"
-import { nanoid } from "nanoid"
-import { Products } from "@/types/firebasetypes"
+import { FormFieldType } from "./AppointmentForm"
 
-
-
- const ProductForm = ({
+const ProductForm = ({
   type,
   products,
   productId,
- }: {
+}: {
   type: "create" | "update",
   products?: Products,
   productId: string
- }) => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null);
-    console.log(`products in product form ${products}, ${products?.name}, ${products?.id}`)
-  // 1. Define your form.
+}) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
+  // Initialize form
   const form = useForm<z.infer<typeof StoreFormValidation>>({
     resolver: zodResolver(StoreFormValidation),
     defaultValues: {
-      name: products?.name || '',
-      price: products?.price || '',
-      category: products?.category || '',
-      skinType: products?.skinType as SkinType,
-      imageFiles: products?.imageFiles as File[],
-      skinConcern: products?.skinConcern || '',
-      description: products?.description || '',
+      name: '',
+      price: '',
+      category: '',
+      skinType: '',
+      imageFiles: [],
+      skinConcern: '',
+      description: '',
     },
   })
+
   const router = useRouter()
+  const { reset } = form
 
- async function onSubmit(values: z.infer<typeof StoreFormValidation>) {
+  // Reset form values when products data changes
+  useEffect(() => {
+    if (products) {
+      reset({
+        name: products?.name || '',
+        price: products?.price || '',
+        category: products?.category || '',
+        skinType: products?.skinType as SkinType,
+        skinConcern: products?.skinConcern || '',
+        description: products?.description || '',
+      })
+    }
+  }, [products, reset])
 
-  let status: string;
-  switch (type) {
-    case 'update':
-      status = 'update';
-      break;
-    case 'create':
-      status = 'create';
-      break;
-  }
-
-
-    setIsLoading(true);
+  // Handle form submission
+  async function onSubmit(values: z.infer<typeof StoreFormValidation>) {
+    setIsLoading(true)
     
     try {
-      if(type === "create"){
+      if (type === "create") {
         const addedProduct = {
           ...values,
           id: nanoid(),
-          imageFiles: values.imageFiles as File[]
+          imageFiles: values.imageFiles as File[],
         }
-  
-        console.log(addedProduct, 'product')
-  
-          //@ts-ignore
-        const productAdded = await addProducts(addedProduct)
+        //@ts-ignore
+        await addProducts(addedProduct)
       } else {
         const productToUpdate = {
-          productId: products,
-          ...values
-        };
-        
-    const updatedProducts = await updateProducts(productId, productToUpdate)
-      };
-    } catch (error) {
-      console.log(error);
-      
-      // Check if error is an instance of Error and get the message
-      if (error instanceof Error) {
-          setError(error.message);
-          setIsLoading(false)
-      } else {
-          // Otherwise, convert the error to string
-          setError(String(error));
-          setIsLoading(false)
+          product: {
+            productId: products,
+            name: products?.name || '',
+            price: products?.price || '',
+            category: products?.category || '',
+            skinType: products?.skinType as SkinType,
+            skinConcern: products?.skinConcern || '',
+            description: products?.description || '',
+          },
+          type,
+        }
+        await updateProducts(productId, productToUpdate)
       }
-  }
-  finally {
-    setIsLoading(false);
-    form.reset();  // Reset form after successful submission
-  }
-  
+      form.reset() // Reset form after successful submission
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message)
+      } else {
+        setError(String(error))
+      }
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
-      {error && <div className="error-message text-red-700 bg-red opacity-4 p-2">{error}</div>}
+        {error && <div className="error-message text-red-700 bg-red opacity-4 p-2">{error}</div>}
+
         <section className="mb-12 space-y-4">
-            <h1 className="header">Hi there 👋</h1>
-            <p className="text-dark-700">When would you be free to stop by? <br />
-             Please enter your correct details.</p>
+          <h1 className="header">Hi there 👋</h1>
+          <p className="text-dark-700">
+            When would you be free to stop by? <br />
+            Please enter your correct details.
+          </p>
         </section>
+
         <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="name"
-            label="Product name"
-            placeholder="XYZ SPF"
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="name"
+          label="Product name"
+          placeholder="XYZ SPF"
         />
-        
+
         <CustomFormField
-            fieldType={FormFieldType.INPUT}
-            control={form.control}
-            name="price"
-            label="Price"
-            placeholder="12"
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="price"
+          label="Price"
+          placeholder="12"
         />
+
         <div>
-        <CustomFormField
+          <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
             name="skinType"
             label="Skin type"
             renderSkeleton={(field) => (
-              <FormControl>  
+              <FormControl>
                 <RadioGroup
                   className="flex h-11 gap-6 xl:justify-between"
                   onValueChange={field.onChange}
@@ -150,67 +153,83 @@ import { Products } from "@/types/firebasetypes"
                     </div>
                   ))}
                 </RadioGroup>
-              </FormControl> )} />
+              </FormControl>
+            )}
+          />
 
-              <CustomFormField
-              fieldType={FormFieldType.SELECT}
-              control={form.control}
-              name="category"
-              label="Product Type"
-              placeholder="Select a skin concern"
-            >
-              {ProductType.map((product, i) => (
-                <SelectItem key={i} value={product}>
-                  <div className="flex cursor-pointer items-center gap-2">
-                    <p>{product}</p>
-                  </div>
-                </SelectItem>
-              ))}
-            </CustomFormField>
+          <CustomFormField
+            fieldType={FormFieldType.SELECT}
+            control={form.control}
+            name="category"
+            label="Product Type"
+            placeholder="Select a skin concern"
+          >
+            {ProductType.map((product, i) => (
+              <SelectItem key={i} value={product}>
+                <div className="flex cursor-pointer items-center gap-2">
+                  <p>{product}</p>
+                </div>
+              </SelectItem>
+            ))}
+          </CustomFormField>
         </div>
 
         <CustomFormField
-              fieldType={FormFieldType.SELECT}
-              control={form.control}
-              name="skinConcern"
-              label="Skin concern"
-              placeholder="Select a skin concern"
-            >
-              {SkinConcern.map((treatment, i) => (
-                <SelectItem key={i} value={treatment}>
-                  <div className="flex cursor-pointer items-center gap-2">
-                    <p>{treatment}</p>
-                  </div>
-                </SelectItem>
-              ))}
-            </CustomFormField>
-
-        <div>
-        <CustomFormField
-          fieldType={FormFieldType.SKELETON}
+          fieldType={FormFieldType.SELECT}
           control={form.control}
-          name="imageFiles"
-          label="Upload Image"
-          renderSkeleton={(field) => (
-            <FormControl>
-             <FileUploader files={field.value as File[]} onChange={field.onChange} />
-            </FormControl>
-          )}
-        />
+          name="skinConcern"
+          label="Skin concern"
+          placeholder="Select a skin concern"
+        >
+          {SkinConcern.map((treatment, i) => (
+            <SelectItem key={i} value={treatment}>
+              <div className="flex cursor-pointer items-center gap-2">
+                <p>{treatment}</p>
+              </div>
+            </SelectItem>
+          ))}
+        </CustomFormField>
+
+        {/* Conditional Rendering for File Uploader */}
+        <div>
+          <CustomFormField
+            fieldType={FormFieldType.SKELETON}
+            control={form.control}
+            name="imageFiles"
+            label="Upload Image"
+            renderSkeleton={(field) => (
+              <FormControl>
+                {type === 'create' ? (
+                  <FileUploader
+                    files={field.value as File[]}
+                    onChange={field.onChange}
+                  />
+                ) : (
+                  <div className="text-gray-500">
+                    Images cannot be edited during update.
+                  </div>
+                )}
+              </FormControl>
+            )}
+          />
         </div>
 
         <div className="flex flex-col gap-6 xl:flex-row">
-              <CustomFormField
-                fieldType={FormFieldType.TEXTAREA}
-                control={form.control}
-                name="description"
-                label="Descrption"
-                placeholder="Solves ABC for XYZ in 123"
-              />
-            </div>
-       <SubmitButton isLoading={isLoading}>{type === "create" ? "Add Products" : "Update Products"}</SubmitButton>
+          <CustomFormField
+            fieldType={FormFieldType.TEXTAREA}
+            control={form.control}
+            name="description"
+            label="Description"
+            placeholder="Solves ABC for XYZ in 123"
+          />
+        </div>
+
+        <SubmitButton isLoading={isLoading}>
+          {type === "create" ? "Add Product" : "Update Product"}
+        </SubmitButton>
       </form>
     </Form>
   )
 }
+
 export default ProductForm
