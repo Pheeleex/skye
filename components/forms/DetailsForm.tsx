@@ -6,26 +6,24 @@ import {
   } from "@/components/ui/form"
   import { zodResolver } from "@hookform/resolvers/zod"
 
-import { string, z } from "zod"
+import {  z } from "zod"
 import { PatientDetailsValidation } from '@/lib/validations'
 import { GenderOptions, PatientDetailsDefaultValues } from '@/constants'
 import CustomFormField from '../CustomFormField'
-
 import { useForm } from 'react-hook-form'
 import { useParams, useRouter } from 'next/navigation'
-
-
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Label } from '../ui/label'
 import SubmitButton from '../SubmitButton'
-
-import { addPatientDetails } from '@/lib/actions/patients.actions'
 import { FileUploader } from '../FileUploader'
 import { nanoid } from 'nanoid'
-import { addDetails } from '@/lib/firebase'
 import { FormFieldType } from './AppointmentForm'
+import { Appointment } from '@/types/firebasetypes'
+import { addDetails, addPatients } from '@/lib/actions/patients.actions'
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { storage } from '@/lib/firebase'
 
-const DetailsForm = () => {
+const DetailsForm = ({user}:{user?:Appointment}) => {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string>('')
   const [success, setSuccess] = useState<boolean>(false)
@@ -33,10 +31,9 @@ const DetailsForm = () => {
   const form = useForm<z.infer<typeof PatientDetailsValidation>>({
     resolver: zodResolver(PatientDetailsValidation),
     defaultValues: {
-    ...PatientDetailsDefaultValues,
-      name: "",
-      email: "",
-      phone: "",
+      name: user ? user.name : "",
+      email: user ? user.email : "",
+      phone: user ? user.phoneNumber : "",
     },
   })
   const router = useRouter()
@@ -47,15 +44,32 @@ const DetailsForm = () => {
     try {
       const patientData = {
         ...values,
-        userId: userId ?? nanoid(), // Use userId from URL or fallback to a new one
-        birthDate: new Date(values.birthDate),
-        facePicture: values.facePicture
+        userId: user? user.id : nanoid(), // Use userId from URL or fallback to a new one,
       }
 
       console.log(patientData, 'patientData')
 
-        //@ts-ignore
-       await addDetails(patientData)
+      const facePictureFiles = values.facePicture as File[];
+    const uploadedImageUrls: string[] = [];
+
+    // Upload images first (client-side)
+    for (const file of facePictureFiles) {
+      const storageRef = ref(storage, `patients/${patientData.userId}/${file.name}`);
+      await uploadBytes(storageRef, file);
+      const downloadUrl = await getDownloadURL(storageRef);
+      uploadedImageUrls.push(downloadUrl);
+    }
+
+     // Remove non-serializable data from patientData (e.g., File instances)
+     const cleanedPatientData = { ...patientData, facePicture: undefined };
+
+    // Debug and make sure you're passing only plain objects
+    console.log('Sending cleaned data:', cleanedPatientData, uploadedImageUrls);
+
+
+     // Call server-side action with only cleaned data
+     await addPatients(cleanedPatientData, uploadedImageUrls); // Only pass serializable data
+ 
 
         // Set success to true to show success message
       setSuccess(true)
@@ -95,13 +109,13 @@ const DetailsForm = () => {
           {/* Success and Error Messages */}
         {success && (
           <div className="success-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 
-          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out">
+          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out z-10">
             Details submitted successfully!
           </div>
         )}
         {error && (
           <div className="error-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-500 
-          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out">
+          text-white py-2 px-4 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out z-10">
             {error}
           </div>
         )}
@@ -234,7 +248,7 @@ const DetailsForm = () => {
           />
         </div>
 
-        <div>
+       <div>
         <CustomFormField
           fieldType={FormFieldType.SKELETON}
           control={form.control}
@@ -246,7 +260,7 @@ const DetailsForm = () => {
             </FormControl>
           )}
         />
-        </div>
+        </div> 
 
         <section className="space-y-6">
         <div className="mb-9 space-y-1">

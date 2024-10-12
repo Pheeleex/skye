@@ -2,9 +2,10 @@ import React from 'react'
 import StatCard from '@/components/StatCard'
 import { columns } from '@/components/table/columns'
 import { DataTable } from '@/components/table/DataTable'
-import { getAppointmentList } from '@/lib/actions/appointments.actions'
+
 import Image from "next/legacy/image"
 import Link from 'next/link'
+import { getAppointmentList } from '@/lib/actions/appointments.actions'
 
 const Admin = async ({ searchParams }: SearchParamProps) => {
   const appointmentId = (searchParams?.id as string) || '';

@@ -1,22 +1,47 @@
-// components/dashboard/AppointmentSection.tsx
-const AppointmentSection = () => {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4">Upcoming Appointments</h2>
-        {/* Replace this with actual appointment data */}
+import { formatDateTime } from "@/lib/utils";
+import { Appointment } from "@/types/firebasetypes";
+
+const AppointmentSection = async ({
+  patient,
+  userAppointment
+}: {
+  patient: PatientDetailsParams;
+  userAppointment: Appointment[];  // Assuming it's an array now
+}) => {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">Upcoming Appointments</h2>
+
+      {/* Check if there are appointments */}
+      {userAppointment.length > 0 ? (
         <div className="space-y-4">
-          <div className="p-4 bg-gray-50 rounded-lg border">
-            <h3 className="font-medium">Check-up with Dr. Smith</h3>
-            <p className="text-sm text-gray-600">October 5th, 2024 at 10:30 AM</p>
-          </div>
-          <div className="p-4 bg-gray-50 rounded-lg border">
-            <h3 className="font-medium">Dental Cleaning</h3>
-            <p className="text-sm text-gray-600">November 12th, 2024 at 2:00 PM</p>
-          </div>
+          {userAppointment.map((appointment, index) => (
+            <div
+              key={index}
+              className="p-5 bg-gray-50 rounded-lg border border-gray-200 shadow-sm hover:shadow-lg transition-shadow duration-200"
+            >
+              <h3 className="font-medium text-lg text-gray-700">
+                {appointment.treatment} with Dr. {appointment.primaryPhysician}
+              </h3>
+              <p className="text-sm text-gray-500 mt-2">
+                {formatDateTime(appointment.schedule).dateTime}
+              </p>
+              <div className="mt-4 flex justify-between items-center">
+                <p className="text-xs text-gray-400">
+                  Appointment ID: {appointment.id}
+                </p>
+                <button className="text-blue-500 hover:text-blue-600 font-medium text-sm">
+                  View Details
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-    );
-  };
-  
-  export default AppointmentSection;
-  
+      ) : (
+        <p className="text-gray-500">You have no upcoming appointments.</p>
+      )}
+    </div>
+  );
+};
+
+export default AppointmentSection;

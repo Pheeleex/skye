@@ -83,9 +83,10 @@ declare type SearchParamProps = {
     occupation: string;
     emergencyContactName: string;
     emergencyContactNumber: string;
-    allergies: string | undefined;
-    currentMedication: string | undefined;
-    facePicture:  [] | undefined;
+    allergies?: string | undefined;
+    currentMedication?: string | undefined;
+    facePicture?:  File[] | undefined;
+    images?: string
     privacyConsent: boolean;
   }
   
@@ -93,7 +94,7 @@ declare type SearchParamProps = {
     name: string;
     email: string;
     phoneNumber: string;
-    location: Location
+    Location: Location
     treatment: string;
     primaryPhysician: string;
     reason: string;

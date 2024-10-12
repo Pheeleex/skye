@@ -1,18 +1,18 @@
 import Image from "next/legacy/image";
-import { redirect } from "next/navigation";
-import { getUser } from "@/lib/actions/patients.actions";
 import DetailsForm from "@/components/forms/DetailsForm";
+import { getAppointment } from "@/lib/actions/appointments.actions";
 
 
 const PatientDetails = async ({ params: { userId } }: SearchParamProps) => {
-  const user = await getUser(userId);
+ const user = await getAppointment(userId)
+  console.log(user)
  
 
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
-          <DetailsForm  />
+          <DetailsForm user={user}  />
           <p className="copyright py-12">© 2024 CarePluse</p>
         </div>
       </section>

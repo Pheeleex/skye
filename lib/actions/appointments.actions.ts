@@ -20,7 +20,7 @@ import {
 import { formatDateTime, parseStringify } from "../utils";
 import App from "next/app";
 import { InputFile } from "node-appwrite/file";
-import { addDoc, collection, doc, DocumentData, getDocs, orderBy, query, QueryDocumentSnapshot, Timestamp, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, DocumentData, getDocs, orderBy, query, QueryDocumentSnapshot, Timestamp, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { Appointment } from "@/types/firebasetypes";
 import twilio from 'twilio';
@@ -72,7 +72,6 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
       const errorRef = collection(db, 'smsErrors');
       await addDoc(errorRef, {
         error: smsError.message,
-        timestamp: new Date().toISOString(),
         appointmentId: docRef.id,
         username: userName
       });
@@ -96,8 +95,84 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
   }
 };
 
+export const getAppointment = async (userId: string) => {
+  try {
+    const appointmentsRef = collection(db, 'skyeAppointment');  // Reference to the collection
+
+    // Query to filter by user id and order by createdAt
+    const appointmentsQuery = query(
+      appointmentsRef, 
+      where("id", "==", userId), // Filter based on the user's ID
+      orderBy("createdAt", "desc")  // Order the results if needed
+    );
+
+    // Fetch the matching documents
+    const appointmentSnapshot = await getDocs(appointmentsQuery);
+
+    // Check if there's a matching document
+    if (appointmentSnapshot.empty) {
+      return null; // Return null if no appointment matches the id
+    }
+
+    // Map the document data into an Appointment object
+    const appointment = appointmentSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      
+     
+      return {
+        ...data,    // Spread the document data
+        schedule: data.schedule.toDate(),  // Use the converted Date object or the original string
+      } as Appointment;  // Cast as Appointment type
+    })[0]; // Since we expect only one result, use the first match
+
+    // Return the found appointment
+    return appointment;
+  
+  } catch (error) {
+    console.log("Error fetching appointment:", error);
+    throw new Error("Failed to fetch appointment");  // Throw an error for easier debugging
+  }
+};
 
 // Function to get and count appointments from Firestore
+// Function to fetch the appointment by userId
+export const getUserAppointment = async (userId: string): Promise<Appointment[]> => {
+  try {
+    const appointmentsRef = collection(db, 'skyeAppointment');  // Reference to the collection
+
+    // Query to filter by user id and order by createdAt
+    const appointmentsQuery = query(
+      appointmentsRef,
+      where("id", "==", userId), // Filter based on the user's ID
+      orderBy("createdAt", "desc")  // Order by creation date
+    );
+
+    // Fetch the matching documents
+    const appointmentSnapshot = await getDocs(appointmentsQuery);
+
+    // Check if there are any matching documents
+    if (appointmentSnapshot.empty) {
+      return []; // Return an empty array if no appointments match the userId
+    }
+
+    // Map the document data into an array of Appointment objects
+    const appointments = appointmentSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        ...data,    // Spread the document data
+        schedule: data.schedule.toDate(),  // Convert Firestore timestamp to JS Date
+      } as Appointment;  // Cast as Appointment type
+    });
+
+    // Return the list of appointments
+    return appointments;
+  
+  } catch (error) {
+    console.log("Error fetching appointments:", error);
+    throw new Error("Failed to fetch appointments");
+  }
+};
+
 export const getAppointmentList = async (appointmentId: string) => {
   try {
     const appointmentsRef = collection(db, 'skyeAppointment');  // Reference to the collection
@@ -107,7 +182,7 @@ export const getAppointmentList = async (appointmentId: string) => {
     // Map the documents into an Appointment array, converting timestamps if necessary
     const appointments = appointmentSnapshot.docs.map((doc) => {
       const data = doc.data();
-      
+
       // Convert Firestore Timestamps to Date objects (if schedule is a Timestamp)
       if (data.schedule && data.schedule.toDate) {
         data.schedule = data.schedule.toDate(); // Convert to Date object
@@ -148,16 +223,12 @@ export const getAppointmentList = async (appointmentId: string) => {
 
     // Return the result as a stringified object (if needed)
     return parseStringify(data);
-  
+
   } catch (error) {
     console.log("Error fetching appointments:", error);
     throw new Error("Failed to fetch appointments");  // Throw an error for easier debugging
   }
 };
-
-
-
-
 
 
 export const updateAppointments = async (userId: string, appointmentToUpdate: { appointment: Partial<Appointment>, type: string }) => {

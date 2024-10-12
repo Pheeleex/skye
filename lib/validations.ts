@@ -177,7 +177,7 @@ phoneNumber: z
   .string()
   .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
   treatment: z.string().min(2, "Select at least one treatment"),
-  location: z.enum(['Abuja', 'Lagos']),
+  Location: z.enum(['Abuja', 'Lagos']),
   consultationType: z.enum(['Online Consultation', 'In person consultation']),
   primaryPhysician: z.string().min(2, "Select at least one doctor"),
   schedule: z.coerce.date(),
@@ -208,6 +208,8 @@ export const CancelAppointmentSchema = z.object({
     .max(500, "Reason must be at most 500 characters"),
 });
 
+
+
 export function getAppointmentSchema(type: string) {
   switch (type) {
     case "create":
@@ -218,3 +220,15 @@ export function getAppointmentSchema(type: string) {
       return ScheduleAppointmentSchema;
   }
 }
+
+
+export const ReturnClientValidation = z.object({
+  name: z
+  .string()
+  .min(2, "Name must be at least 2 characters")
+  .max(50, "Name must be at most 50 characters"),
+email: z.string().email("Invalid email address"),
+phone: z
+  .string()
+  .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+})

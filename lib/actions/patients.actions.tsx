@@ -1,150 +1,112 @@
 'use server'
-import { ID, Query } from "node-appwrite";
-import { BUCKET_ID, 
-  DATABASE_ID, 
-  databases, 
-  ENDPOINT, 
-  PROJECT_ID,
-  PATIENT_COLLECTION_ID,
-  PATIENT_DETAILS_COLLECTION_ID,
-  SKYE_APPOINTMENT_COLLECTION_ID,
-  storage, 
-  users 
-} from "../appwrite.config"
-import { parseStringify } from "../utils"
-import { InputFile } from 'node-appwrite/file';
 
-export const createUser = async(user: CreateUserParams)=>{
-    try {
-        const newUser = await users.create(
-            ID.unique(),
-            user.email,
-            user.phone,
-            undefined,
-            user.name
-        )
-        console.log(newUser, 'new user')
-        return parseStringify(newUser)
-    } catch (error: any) {
-      console.log("createUser error", error);
-      if (error?.code === 409) {
-        throw new Error("A user with this email or phone number already exists.");
-      }
-      throw new Error("An unexpected error occurred.");
-    }
-}
+import { addDoc, collection, doc, getDoc, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore"
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
+import { db, storage } from "../firebase"
+import { Patient } from "@/types/firebasetypes";
 
 
 
-export const getUser = async (userId: string) => {
-    try {
-      const user = await users.get(userId)
-      return parseStringify(user)
-    } catch (error) {
-      console.log(error)  
-    }
-}
-
-export const registerPatient = async ({
-    identificationDocument,
-    ...patient
-  }: RegisterUserParams) => {
-    try {
-      // Upload file ->  // https://appwrite.io/docs/references/cloud/client-web/storage#createFile
-      let file;
-      if (identificationDocument) {
-        const inputFile =
-          identificationDocument &&
-          InputFile.fromBuffer(
-            identificationDocument?.get("blobFile") as Blob,
-            identificationDocument?.get("fileName") as string
-          );
-  
-        file = await storage.createFile(BUCKET_ID!, ID.unique(), inputFile);
-      }
-      const newPatient = await databases.createDocument(
-        DATABASE_ID!,
-        PATIENT_COLLECTION_ID!,
-        ID.unique(),
-        {
-          identificationDocumentId: file?.$id ? file.$id : null,
-          identificationDocumentUrl: file?.$id
-            ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view??project=${PROJECT_ID}`
-            : null,
-          ...patient,
-        }
-      );
-  
-      return parseStringify(newPatient);
-    } catch (error) {
-      console.error("An error occurred while creating a new patient:", error);
-    }
-  };
-
-  
-
-export const addPatientDetails = async ({
-  facePicture,
-  ...patient
-}: PatientDetailsParams) => {
+export const addPatients = async (patientData: Patient, imageUrls: string[]): Promise<void> => {
   try {
-    let file;
-    const patientId = ID.unique(); // Generate unique patient ID
+    const patientRef = collection(db, 'patients');
 
-    // Upload identificationDocument to storage if it exists
-    if (facePicture) {
-      const inputFile =
-        facePicture &&
-        InputFile.fromBuffer(
-         facePicture.get("blobFile") as Blob,
-         facePicture.get("fileName") as string
-        );
+    // Add patient data along with image URLs (plain data)
+    await addDoc(patientRef, {
+      ...patientData,
+      images: imageUrls, // Pass only serializable values
+    });
 
-      // Upload file to the Appwrite storage and get the file details
-      file = await storage.createFile(
-        BUCKET_ID!,
-        `${patientId}`, // Use patientId and unique ID for the file
-        inputFile
-      );
-    }
-    console.log(file?.$id, 'fileid1')
-    // Create the patient document in the database and include the file data
-    const newPatient = await databases.createDocument(
-      DATABASE_ID!,
-      PATIENT_DETAILS_COLLECTION_ID!,
-      patientId,
-      {
-        ...patient,
-        facePictureId: file?.$id || null,
-        facePictureUrl: file
-          ? `${ENDPOINT}/storage/buckets/${BUCKET_ID}/files/${file.$id}/view?project=${PROJECT_ID}`
-          : null,
-      }
-    );
-    console.log(file?.$id, 'fileid2')
-
-    return parseStringify(newPatient); // Return the newly created patient data
+    console.log('Patient added successfully with image URLs');
   } catch (error) {
-    console.error("An error occurred while registering the patient:", error);
-    throw error; // Throw error for further handling (optional)
+    console.error('Error adding patient to database:', error);
   }
 };
 
 
-  // GET PATIENT
-export const getPatient = async (userId: string) => {
+export const fetchAllPatients = async () => {
   try {
-    const patients = await databases.listDocuments(
-      DATABASE_ID!,
-      PATIENT_COLLECTION_ID!,
-      [Query.equal("userId", [userId])]
+    const patientsRef = collection(db, "patients");
+    const snapshot = await getDocs(patientsRef);
+    
+    // Map through the snapshot to return all patients
+    const patients = snapshot.docs.map((doc) => ({
+      id: doc.id, // Include document ID
+      ...doc.data(),
+    }));
+
+    return patients;
+  } catch (error) {
+    console.error("Error fetching patients: ", error);
+    throw new Error("Unable to fetch patient data");
+  }
+};
+
+
+export const fetchPatientById = async (userId: string) => {
+  try {
+    const patientsRef = collection(db, 'patients');  // Reference to the collection
+
+    // Query to filter by user id and order by createdAt
+    const patientsQuery = query(
+      patientsRef, 
+      where("userId", "==", userId) // Filter based on the user's I  // Order the results if needed
+    );
+    console.log(userId, 'userId in console')
+     // Fetch the matching documents
+     const patientSnapshot = await getDocs(patientsQuery);
+
+     // Check if there's a matching document
+     if (patientSnapshot.empty) {
+       return null; // Return null if no appointment matches the id
+     }
+
+      // Map the document data into an Appointment object
+    const patient = patientSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      
+
+      return {
+        ...data,    // Spread the document data // Use the converted Date object or the original string
+      } as PatientDetailsParams;  // Cast as Appointment type
+    })[0]; // Since we expect only one result, use the first match
+
+    // Return the found appointment
+    return patient;
+  } catch (error) {
+    console.log("Error fetching appointment:", error);
+    throw new Error("Failed to fetch appointment");  // Throw an error for easier debugging
+  }
+};
+
+
+export const checkPatientExists = async (name: string, email: string, phone: string): Promise<string | null> => {
+  try {
+    // Reference the "patients" collection
+    const patientRef = collection(db, 'patients');
+
+    // Query Firestore for a document where name, email, and phone match
+    const q = query(
+      patientRef,
+      where('name', '==', name),
+      where('email', '==', email),
+      where('phone', '==', phone)
     );
 
-    return parseStringify(patients.documents[0]);
+    // Execute the query
+    const querySnapshot = await getDocs(q);
+
+    // If a match is found, return the userId of the first match
+    if (!querySnapshot.empty) {
+      const matchedPatient = querySnapshot.docs[0].data();
+      return matchedPatient.userId; // Return the userId
+    }
+
+    // If no match is found, return null
+    return null;
   } catch (error) {
-    console.error(
-      "An error occurred while retrieving the patient details:",
-      error
-    );
+    console.error("Error checking patient existence:", error);
+    throw error
+    return null;
   }
 };

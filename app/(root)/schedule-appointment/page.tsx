@@ -12,14 +12,18 @@ const Home = ({ searchParams }: SearchParamProps) => {
 
   return (
     <div className="flex h-screen max-h-screen">
+
+
        {isAdmin && <PassKeyModal /> }
 
 
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[496px]">
-
+        <h1>If you have a profile with us please <Link className="text-yellow-800 font-bold border "
+         href={'./clients'}>Click here</Link> </h1>
         <AppointmentForm
           type="create"
+          user="visitor"
          />
 
           <div className="text-14-regular mt-20 flex justify-between">

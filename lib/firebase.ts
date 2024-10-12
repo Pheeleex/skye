@@ -43,31 +43,6 @@ export const storage = getStorage(app)
 
 
 
-  export const addDetails = async({
-    name,
-    facePicture,
-    ...patient
-  }:PatientDetailsParams) => {
-    try {
-      const patientRef = collection(db, 'patients')
-  
-      const docRef = await addDoc(patientRef, {
-        ...patient,
-        name, // Ensure name is included in the Firestore document
-      })
-  if(facePicture && facePicture.length > 0){
-     const folderPath = `patients/${name}`
-    for(let i=0; i < facePicture.length; i++ ){
-      const file = facePicture[i];
-      const storageRef = ref(storage, `${folderPath}/${name}${i + 1}`);
-      await uploadBytes(storageRef, file);
-    }
-  }
-      console.log('Property and images added successfully');
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
 
   export const addProducts = async(product: Products, imageFiles: File[]): Promise<void> => {

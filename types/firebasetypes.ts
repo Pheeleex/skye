@@ -4,6 +4,9 @@ export type Status = "pending" | "scheduled" | "cancelled";
 export type ProductStatus = "create" | "update";
 
 export interface Patient{
+  name: string;
+  email: string;
+  phone: string;
   userId: string;
     birthDate: Date;
     gender: Gender;
@@ -11,9 +14,9 @@ export interface Patient{
     occupation: string;
     emergencyContactName: string;
     emergencyContactNumber: string;
-    allergies: string | undefined;
-    currentMedication: string | undefined;
-    facePicture:  [] | undefined;
+    allergies?: string | undefined;
+    currentMedication?: string | undefined;
+    facePicture?:  File[] | undefined;
     privacyConsent: boolean;
 }
 
@@ -22,7 +25,7 @@ export interface Appointment {
     name: string;
     email: string;
     phoneNumber: string;
-    location: 'Abuja' | 'Lagos';
+    Location: 'Abuja' | 'Lagos';
     treatment: string;
     schedule: Date;
     status: Status;
@@ -66,7 +69,6 @@ export interface UpdateAppointmentParams {
       id: string
       status: ProductStatus
   }
-
 
 
   export interface StoreProps {

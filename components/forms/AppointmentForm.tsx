@@ -1,6 +1,6 @@
 'use client'
 import { getAppointmentSchema } from "@/lib/validations"
-import { Appointment } from "@/types/firebasetypes"
+import { Appointment, Patient } from "@/types/firebasetypes"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { SetStateAction, useState } from "react"
@@ -18,8 +18,6 @@ import {  createSkyeAppointment, updateAppointments } from "@/lib/actions/appoin
 import { nanoid } from "nanoid"
 
 
-
-
 export enum FormFieldType {
   INPUT = 'input',
   TEXTAREA = 'textarea',
@@ -35,14 +33,18 @@ const AppointmentForm = ({
   type,
   appointment,
   appointmentId,
+  user,
   userId,
-  setOpen
+  setOpen,
+  patient,
 }: {
   type: "create" | "cancel" | "schedule",
+  user: "visitor" | "client",
   userId?: string
   appointment?: Appointment,
   appointmentId?: string
   setOpen?: (open: boolean) => void
+  patient?: Patient
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false);
@@ -53,10 +55,10 @@ const AppointmentForm = ({
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      name: appointment ? appointment.name : '',
-      email: appointment ? appointment.email : '',
-      phoneNumber: appointment ? appointment.phoneNumber : '',
-      location: appointment ? appointment.location : 'Abuja',
+      name: patient ? patient.name : appointment ? appointment.name : '',
+    email: patient ? patient.email : appointment ? appointment.email : '',
+    phoneNumber: patient ? patient.phone : appointment ? appointment.phoneNumber : '',
+      Location: appointment ? appointment.Location : 'Abuja',
       treatment: appointment ? appointment.treatment : '',
       primaryPhysician: appointment ? appointment.primaryPhysician : '',
       schedule:  new Date(),
@@ -65,6 +67,8 @@ const AppointmentForm = ({
       cancellationReason: appointment?.cancellationReason || '',
     },
   })
+
+  console.log(patient)
   
   const router = useRouter()
 
@@ -87,25 +91,27 @@ const AppointmentForm = ({
     console.log(type)
 
     try {
+      const generateId = nanoid()
       if (type === 'create') {
         const appointmentData = {
           ...values,
-          id: nanoid(),
+          id: patient ? patient.userId : nanoid(),
           status: status as Status,
           createdAt: new Date()
         }
         console.log(appointmentData)
-        
         const appointment = await createSkyeAppointment(appointmentData);
-        if(appointment){
-          router.push(`./success/${userId}`)
-        }
 
         if (appointment) {
           form.reset();
           setSuccess(true); // Show success message
           setTimeout(() => setSuccess(false), 3000); // Hide after 3 seconds
-          router.push(`/patients/${appointmentData.id}/details`);
+          if(user==="visitor"){
+            router.push(`schedule-appointment/Success/${appointmentData.id}`);
+          }
+          else{
+           setOpen && setOpen(false)
+          }
         } else {
           setError(error);
         }
@@ -160,7 +166,7 @@ const AppointmentForm = ({
         }
 
         {
-          type == "create" && (
+          type == "create" &&  (
             <>
             {success && (
               <div className=" success-message fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 
@@ -214,7 +220,7 @@ const AppointmentForm = ({
                   <CustomFormField
                     fieldType={FormFieldType.SKELETON}
                     control={form.control}
-                    name="location"
+                    name="Location"
                     label="Location"
                     renderSkeleton={(field) => (
                       <FormControl>
@@ -325,6 +331,8 @@ const AppointmentForm = ({
           )
         }
 
+
+
 {
   type === 'schedule' && (
     <div className="w-full">
@@ -333,7 +341,7 @@ const AppointmentForm = ({
         <p><strong>Name:</strong> {appointment?.name}</p>
         <p><strong>Email:</strong> {appointment?.email}</p>
         <p><strong>Phone:</strong> {appointment?.phoneNumber}</p>
-        <p><strong>Location:</strong> {appointment?.location}</p>
+        <p><strong>Location:</strong> {appointment?.Location}</p>
       </div>
 
       {/* Other fields remain editable */}

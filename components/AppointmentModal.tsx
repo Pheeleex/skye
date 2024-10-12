@@ -9,7 +9,7 @@ import {
   } from "@/components/ui/dialog"
 import { Button } from './ui/button';
 import AppointmentForm from './forms/AppointmentForm';
-import { Appointment } from '@/types/firebasetypes';
+import { Appointment, Patient } from '@/types/firebasetypes';
 //import AppointmentForm from './forms/AppointmentsForm';
   
 
@@ -17,12 +17,16 @@ const AppointmentModal = ({
     appointment,
     type,
     appointmentId,
+    user,
+    patient
 }: {
-    appointmentId: string,
+    appointmentId?: string,
     appointment?: Appointment,
-    type: "schedule" | "cancel";
+    type: "schedule" | "cancel" | "create";
     title: string;
     description: string;
+    user:"visitor" | "client";
+    patient?: Patient
 }) => {
     const [open, setOpen] = useState(false);
 
@@ -32,7 +36,8 @@ const AppointmentModal = ({
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>
         <Button variant="ghost" 
-        className={`capitalize ${type === 'schedule' ? 'text-green-500' : ''}`}
+        className={`capitalize ${type === 'schedule' ? 'text-green-500' : ''} 
+        ${user === 'visitor' ? '' : 'p-2 bg-slate-600 text-white'}`}
 
         >
             {type}
@@ -45,12 +50,16 @@ const AppointmentModal = ({
             Please fill in the following details to {type} appointment
           </DialogDescription>
         </DialogHeader>
-       <AppointmentForm
-            appointmentId={appointment?.id}
-            type={type}
-            appointment={appointment}
-            setOpen={setOpen}
-        />
+        <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin">
+            <AppointmentForm
+              appointmentId={appointment?.id}
+              type={type}
+              appointment={appointment}
+              setOpen={setOpen}
+              user={user}
+              patient={patient}
+            />
+        </div>
   </DialogContent>
 </Dialog>
   )
