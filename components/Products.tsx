@@ -4,17 +4,28 @@ import { deleteProduct, updateProducts } from '@/lib/actions/products.actions';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Trash2, Plus } from 'lucide-react'; // Importing Lucide icons
+import { useState } from 'react'; // Import useState
 
 const Products = ({ products }: { products: any[] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Introduce local state to manage products
+  const [localProducts, setLocalProducts] = useState(products);
 
   const handleEdit = async (product: any) => {
     try {
       const updatedProduct = { number: product.number + 1 }; // Increment the number
-  
+      
       // Call the updateProducts function with the updated product
       await updateProducts(product.id, { product: updatedProduct });
+      
+      // Update the local state to reflect the change
+      setLocalProducts(prevProducts => 
+        prevProducts.map(p => 
+          p.id === product.id ? { ...p, number: updatedProduct.number } : p
+        )
+      );
   
       console.log('Product number incremented successfully');
     } catch (error) {
@@ -22,7 +33,7 @@ const Products = ({ products }: { products: any[] }) => {
     }
   };
 
-  const isDataEmpty = !Array.isArray(products) || products.length < 1;
+  const isDataEmpty = !Array.isArray(localProducts) || localProducts.length < 1;
 
   if (isDataEmpty) {
     return (
@@ -34,7 +45,7 @@ const Products = ({ products }: { products: any[] }) => {
 
   return (
     <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {products.map((product) => (
+      {localProducts.map((product) => (
         <div key={product.id} className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden">
           {product.images?.length > 0 && (
             <div className="w-full h-56 relative">
@@ -49,7 +60,10 @@ const Products = ({ products }: { products: any[] }) => {
             </div>
           )}
           <div className="p-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-2">{product.name || 'No Name'} {product.number || ''}</h2>
+            <div className='flex justify-between items-center'>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">{product.name || 'No Name'} </h2>
+              <p>({product.number || ''})</p>
+            </div>
             <p className="text-sm text-gray-600 mb-4">{product.description || 'No Description'}</p>
             <p className="text-lg font-semibold text-green-600">{product.price || 'N/A'}</p>
           </div>
