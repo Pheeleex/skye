@@ -109,17 +109,17 @@ export const addProducts = async(product: Products, imageFiles: File[]): Promise
   };
   
 
-export const updateProducts = async (productId: string,productToUpdate: {product: Partial<Products>}): Promise<void> => {
-  try {
-    const cleanedData = Object.fromEntries(Object.entries(productToUpdate.product).filter(([_, v]) => v !== undefined && v !== ""));
-    const productRef = doc(db, 'products', productId);
-    await updateDoc(productRef, cleanedData);
-    console.log('Product updated successfully', productId);
-  } catch (error) {
-    console.error('Error updating product: ', error);
-    throw error;
-  }
-};
+  export const updateProducts = async (productId: string, productToUpdate: { product: { number: number } }): Promise<void> => {
+    try {
+      const productRef = doc(db, 'products', productId);
+      await updateDoc(productRef, { number: productToUpdate.product.number });
+      console.log('Product updated successfully', productId);
+    } catch (error) {
+      console.error('Error updating product: ', error);
+      throw error;
+    }
+  };
+  
 
 
 

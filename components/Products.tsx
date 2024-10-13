@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteProduct } from '@/lib/actions/products.actions';
+import { deleteProduct, updateProducts } from '@/lib/actions/products.actions';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Trash2, Plus } from 'lucide-react'; // Importing Lucide icons
@@ -9,12 +9,17 @@ const Products = ({ products }: { products: any[] }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleEdit = (product: any) => {
-    console.log('Edit Product:', product.id);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('productId', product.id);
-    params.set('formType', 'update');
-    router.push(`?${params.toString()}`);
+  const handleEdit = async (product: any) => {
+    try {
+      const updatedProduct = { number: product.number + 1 }; // Increment the number
+  
+      // Call the updateProducts function with the updated product
+      await updateProducts(product.id, { product: updatedProduct });
+  
+      console.log('Product number incremented successfully');
+    } catch (error) {
+      console.error('Error updating product number: ', error);
+    }
   };
 
   const isDataEmpty = !Array.isArray(products) || products.length < 1;
@@ -57,10 +62,7 @@ const Products = ({ products }: { products: any[] }) => {
             />
             <Plus
               className="cursor-pointer text-blue-600 hover:text-blue-700"
-              onClick={() => {
-                // Handle adding product functionality here
-                console.log('Add Product Clicked');
-              }}
+              onClick={() => handleEdit(product)} // Pass the current product
               size={24} // Set the size of the icon
             />
           </div>

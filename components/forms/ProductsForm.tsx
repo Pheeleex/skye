@@ -78,20 +78,6 @@ const ProductForm = ({
         }
         //@ts-ignore
         await addProducts(addedProduct)
-      } else {
-        const productToUpdate = {
-          product: {
-            productId: productId,
-            name: products?.name || '',
-            price: products?.price || '',
-            category: products?.category || '',
-            skinType: products?.skinType as SkinType,
-            skinConcern: products?.skinConcern || '',
-            description: products?.description || '',
-          },
-          type,
-        }
-        await updateProducts(productId, productToUpdate)
       }
       form.reset() // Reset form after successful submission
     } catch (error) {
