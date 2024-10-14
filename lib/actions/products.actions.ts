@@ -99,6 +99,7 @@ export const addProducts = async(product: Products, imageFiles: File[]): Promise
         ...doc.data(),
         id: doc.id,
       })) as Products[];
+      console.log('thedata', productData)
   
       return { product: productData, lastVisible: newLastVisible };
       

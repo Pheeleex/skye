@@ -6,6 +6,20 @@ import { StoreProps } from '@/types/firebasetypes';
 import { useRouter } from 'next/navigation';
 import { ChevronDown } from 'lucide-react'; // Assuming you're using an icon library like Lucide
 
+
+export const updateSearchParams = (type: string, value: string) => {
+  // Get the current URL search params
+  const searchParams = new URLSearchParams('');
+
+  // Set the specified search parameter to the given value
+  searchParams.set(type, value);
+
+  // Set the specified search parameter to the given value
+  const newPathname = `${window.location.pathname}?${searchParams.toString()}`;
+
+  return newPathname;
+};
+
 const SearchFilter = ({ searchParams }: StoreProps) => {
   const router = useRouter();
 
@@ -21,14 +35,15 @@ const SearchFilter = ({ searchParams }: StoreProps) => {
     setSelectedSkinConcern(searchParams.skinConcern || null);
   }, [searchParams]);
 
-  const updateSearchParams = (key: string, value: string) => {
+  const updateFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams as any);
     if (value) {
       params.set(key, value);
     } else {
       params.delete(key);
     }
-    router.push(`?${params.toString()}`);
+    const newPathname = `${window.location.pathname}?${params.toString()}`;
+    router.push(newPathname, {scroll: false});
   };
 
   return (
@@ -47,7 +62,7 @@ const SearchFilter = ({ searchParams }: StoreProps) => {
               key={type}
               onClick={() => {
                 setSelectedSkinType(type);
-                updateSearchParams('skinType', type);
+                updateFilter('skinType', type);
               }}
               className="hover:bg-gray-100 px-4 py-2 rounded-md transition"
             >
@@ -71,7 +86,7 @@ const SearchFilter = ({ searchParams }: StoreProps) => {
               key={type}
               onClick={() => {
                 setSelectedProductType(type);
-                updateSearchParams('category', type);
+                updateFilter('category', type);
               }}
               className="hover:bg-gray-100 px-4 py-2 rounded-md transition"
             >
@@ -95,7 +110,7 @@ const SearchFilter = ({ searchParams }: StoreProps) => {
               key={concern}
               onClick={() => {
                 setSelectedSkinConcern(concern);
-                updateSearchParams('skinConcern', concern);
+                updateFilter('skinConcern', concern);
               }}
               className="hover:bg-gray-100 px-4 py-2 rounded-md transition"
             >

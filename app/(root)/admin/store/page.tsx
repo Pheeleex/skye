@@ -1,71 +1,56 @@
-import ProductForm from '@/components/forms/ProductsForm';
+"use client";
 
-import { StoreProps } from '@/types/firebasetypes';
+import React, { useEffect, useState } from "react";
+import ProductForm from "@/components/forms/ProductsForm";
+import SearchFilter from "@/components/SearchFilter";
+import Products from "@/components/Products";
+import { getProducts } from "@/lib/actions/products.actions";
+import { StoreProps } from "@/types/firebasetypes";
 
-import SearchFilter from '@/components/SearchFilter';
-import Products from '@/components/Products';
-import { getProducts } from '@/lib/actions/products.actions';
+const Page = ({ searchParams }: StoreProps) => {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false); // Add loading state
 
-const Page = async ({ searchParams }: StoreProps) => {
-  // Fetch the products data based on the searchParams
-  const fetchedProducts = await getProducts({
-    skinConcern: searchParams.skinConcern || '',
-    limit: searchParams.limit || 10,
-    skinType: searchParams.skinType || '',
-    category: searchParams.category || '',
-  });
+  // Fetch products inside useEffect to handle async correctly
+  useEffect(() => {
+    const fetchFilteredProducts = async () => {
+      setLoading(true); // Start loading
+      try {
+        const fetchedProducts = await getProducts({
+          skinConcern: searchParams.skinConcern || "",
+          limit: searchParams.limit || 10,
+          skinType: searchParams.skinType || "",
+          category: searchParams.category || "",
+        });
+        setProducts(fetchedProducts?.product || []);
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+      } finally {
+        setLoading(false); // End loading
+      }
+    };
 
-  // Check if products are valid
-  const products = fetchedProducts?.product && Array.isArray(fetchedProducts.product)
-    ? fetchedProducts.product
-    : [];
+    fetchFilteredProducts(); // Call async function inside useEffect
+  }, [searchParams]); // Re-run this effect when searchParams changes
 
-  console.log(products);
-
-  // Check if there's a selected product in the search params for editing
-  const selectedProductId = searchParams.productId || null;
-  const formType = searchParams.formType || 'create';
-
-  // Extract all product IDs
-  const productIds = products.map((prod) => prod.id);
-
-  // Function to find a matching product by ID
-  const getSelectedProduct = (productId: any) => {
-    if (!productId) return null;
-
-    // Check if the selected productId matches any fetched product IDs
-    const matchedProduct = products.find((prod) => prod.id === productId);
-
-    if (matchedProduct) {
-      return matchedProduct;
-    }
-    return null; // Return null if no match is found
-  };
-
-  // Use the getSelectedProduct function to find the selected product
-  const selectedProduct = getSelectedProduct(selectedProductId);
-
-  console.log(selectedProduct, 'was selected', searchParams);
+  const formType = searchParams.formType || "create";
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Product Form */}
       <div className="max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg mb-8">
-        <ProductForm 
-          type={formType}
-          products={selectedProduct!}  // Pass the selected product when in "update" mode
-          productId={selectedProduct?.id ?? ''} 
-        />
+        <ProductForm />
       </div>
 
-      <div>
-        <SearchFilter
-          searchParams={searchParams}
-        />
-      </div>
+      {/* Search Filter */}
+      <SearchFilter searchParams={searchParams} />
 
-      {/* Pass the fetched products to the Products component */}
-      <Products products={products} />
+      {/* Loading UI */}
+      {loading ? (
+        <div>Loading products...</div>
+      ) : (
+        <Products products={products} />
+      )}
     </div>
   );
 };

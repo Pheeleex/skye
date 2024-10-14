@@ -20,15 +20,7 @@ import SubmitButton from "../SubmitButton"
 import { FormFieldType } from "./AppointmentForm"
 import { addProducts, updateProducts } from "@/lib/actions/products.actions"
 
-const ProductForm = ({
-  type,
-  products,
-  productId,
-}: {
-  type: "create" | "update",
-  products?: Products,
-  productId: string
-}) => {
+const ProductForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -50,27 +42,12 @@ const ProductForm = ({
   const router = useRouter()
   const { reset } = form
 
-  // Reset form values when products data changes
-  useEffect(() => {
-    if (products) {
-      reset({
-        name: products?.name || '',
-        price: products?.price || '',
-        category: products?.category || '',
-        skinType: products?.skinType as SkinType,
-        skinConcern: products?.skinConcern || '',
-        description: products?.description || '',
-        number: 0,
-      })
-    }
-  }, [products, reset])
-
+  
   // Handle form submission
   async function onSubmit(values: z.infer<typeof StoreFormValidation>) {
     setIsLoading(true)
     
     try {
-      if (type === "create") {
         const addedProduct = {
           ...values,
           id: nanoid(),
@@ -78,9 +55,9 @@ const ProductForm = ({
         }
         //@ts-ignore
         await addProducts(addedProduct)
-      }
-      form.reset() // Reset form after successful submission
-    } catch (error) {
+        form.reset() // Reset form after successful submission
+      }  
+     catch (error) {
       if (error instanceof Error) {
         setError(error.message)
       } else {
@@ -196,16 +173,12 @@ const ProductForm = ({
             label="Upload Image"
             renderSkeleton={(field) => (
               <FormControl>
-                {type === 'create' ? (
+                
                   <FileUploader
                     files={field.value as File[]}
                     onChange={field.onChange}
                   />
-                ) : (
-                  <div className="text-gray-500">
-                    Images cannot be edited during update.
-                  </div>
-                )}
+                
               </FormControl>
             )}
           />
@@ -222,7 +195,7 @@ const ProductForm = ({
         </div>
 
         <SubmitButton isLoading={isLoading}>
-          {type === "create" ? "Add Product" : "Update Product"}
+          Add Product
         </SubmitButton>
       </form>
     </Form>
