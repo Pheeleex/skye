@@ -12,7 +12,7 @@ const PatientDashboard = (
     userAppointment
   }: {
       patient: PatientDetailsParams,
-      userAppointment: Appointment
+      userAppointment: Appointment[]
 }) => {
   console.log(userAppointment, 'patient dashboard')
     return (

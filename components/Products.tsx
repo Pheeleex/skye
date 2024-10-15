@@ -1,21 +1,19 @@
-'use client'
-import { deleteProduct } from '@/lib/firebase';
+'use client';
+
+import { deleteProduct } from '@/lib/actions/products.actions';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation'; // Also import useSearchParams
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Trash2, Plus } from 'lucide-react'; // Importing Lucide icons
 
 const Products = ({ products }: { products: any[] }) => {
-  const router = useRouter(); // Get the router instance
-  const searchParams = useSearchParams(); // Get the current search parameters
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const handleEdit = (product: any) => {
     console.log('Edit Product:', product.id);
-
-    // Get the current search params and append the new ones
     const params = new URLSearchParams(searchParams.toString());
-    params.set('productId', product.id); // Set productId
-    params.set('formType', 'update');    // Set formType to update
-
-    // Push the updated query params to the router
+    params.set('productId', product.id);
+    params.set('formType', 'update');
     router.push(`?${params.toString()}`);
   };
 
@@ -46,29 +44,24 @@ const Products = ({ products }: { products: any[] }) => {
             </div>
           )}
           <div className="p-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-2">{product.name || 'No Name'}</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">{product.name || 'No Name'} {product.number || ''}</h2>
             <p className="text-sm text-gray-600 mb-4">{product.description || 'No Description'}</p>
             <p className="text-lg font-semibold text-green-600">{product.price || 'N/A'}</p>
           </div>
           {/* Icons Section */}
-          <div className="flex justify-between space-x-4 p-4">
-            <Image
-              src="/assets/icons/delete.svg"
-              alt="Delete"
-              className="cursor-pointer"
-              style={{ objectFit: 'cover' }}
-              width={50}
-              height={50}
+          <div className="flex justify-between items-center space-x-4 p-4">
+            <Trash2
+              className="cursor-pointer text-red-600 hover:text-red-700"
               onClick={() => deleteProduct(product.id!, product.name ?? '', () => console.log('Product Deleted'))}
+              size={24} // Set the size of the icon
             />
-            <Image
-              src="/assets/icons/edit.svg"
-              alt="Edit"
-              className="cursor-pointer"
-              style={{ objectFit: 'cover' }}
-              width={50}
-              height={50}
-              onClick={() => handleEdit(product)} // Trigger the edit function
+            <Plus
+              className="cursor-pointer text-blue-600 hover:text-blue-700"
+              onClick={() => {
+                // Handle adding product functionality here
+                console.log('Add Product Clicked');
+              }}
+              size={24} // Set the size of the icon
             />
           </div>
         </div>

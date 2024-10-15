@@ -36,6 +36,7 @@ export const StoreFormValidation = z.object({
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
  price: z.string(),
+ number: z.number(),
  category: z.string(),
  skinConcern: z.string(),
   skinType: z.string(),
@@ -183,10 +184,8 @@ phoneNumber: z
   schedule: z.coerce.date(),
   reason: z
     .string()
-    .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
+    .optional(),
   note: z.string().optional(),
-  cancellationReason: z.string().optional(),
 });
 
 export const ScheduleAppointmentSchema = z.object({
@@ -194,7 +193,6 @@ export const ScheduleAppointmentSchema = z.object({
   schedule: z.coerce.date(),
   reason: z.string().optional(),
   note: z.string().optional(),
-  cancellationReason: z.string().optional(),
 });
 
 export const CancelAppointmentSchema = z.object({
@@ -202,25 +200,7 @@ export const CancelAppointmentSchema = z.object({
   schedule: z.coerce.date(),
   reason: z.string().optional(),
   note: z.string().optional(),
-  cancellationReason: z
-    .string()
-    .min(2, "Reason must be at least 2 characters")
-    .max(500, "Reason must be at most 500 characters"),
 });
-
-
-
-export function getAppointmentSchema(type: string) {
-  switch (type) {
-    case "create":
-      return CreateAppointmentSchema;
-    case "cancel":
-      return CancelAppointmentSchema;
-    default:
-      return ScheduleAppointmentSchema;
-  }
-}
-
 
 export const ReturnClientValidation = z.object({
   name: z
@@ -232,3 +212,18 @@ phone: z
   .string()
   .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
 })
+
+export function getAppointmentSchema(type: string) {
+  switch (type) {
+    case "create":
+      return CreateAppointmentSchema;
+    case "cancel":
+      return CancelAppointmentSchema;
+      case "schedule":
+        return ScheduleAppointmentSchema;
+    default:
+      return CreateAppointmentSchema;
+  }
+}
+
+

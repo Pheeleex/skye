@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { nanoid } from "nanoid"
 import { Products } from "@/types/firebasetypes"
 import { StoreFormValidation } from "@/lib/validations"
-import { addProducts, updateProducts } from "@/lib/firebase"
+
 import { Form, FormControl } from "../ui/form"
 import CustomFormField from "../CustomFormField"
 
@@ -18,6 +18,7 @@ import { SelectItem } from "../ui/select"
 import { FileUploader } from "../FileUploader"
 import SubmitButton from "../SubmitButton"
 import { FormFieldType } from "./AppointmentForm"
+import { addProducts, updateProducts } from "@/lib/actions/products.actions"
 
 const ProductForm = ({
   type,
@@ -42,6 +43,7 @@ const ProductForm = ({
       imageFiles: [],
       skinConcern: '',
       description: '',
+      number:0,
     },
   })
 
@@ -58,6 +60,7 @@ const ProductForm = ({
         skinType: products?.skinType as SkinType,
         skinConcern: products?.skinConcern || '',
         description: products?.description || '',
+        number: 0,
       })
     }
   }, [products, reset])
@@ -78,7 +81,7 @@ const ProductForm = ({
       } else {
         const productToUpdate = {
           product: {
-            productId: products,
+            productId: productId,
             name: products?.name || '',
             price: products?.price || '',
             category: products?.category || '',
@@ -129,6 +132,14 @@ const ProductForm = ({
           name="price"
           label="Price"
           placeholder="12"
+        />
+
+        <CustomFormField
+          fieldType={FormFieldType.INPUT}
+          control={form.control}
+          name="number"
+          label="Amount available"
+          placeholder="0"
         />
 
         <div>

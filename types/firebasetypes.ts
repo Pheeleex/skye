@@ -21,7 +21,7 @@ export interface Patient{
 }
 
 export interface Appointment {
-    patient: Patient,
+ 
     name: string;
     email: string;
     phoneNumber: string;
@@ -31,12 +31,28 @@ export interface Appointment {
     status: Status;
     primaryPhysician: string;
     reason: string;
-    note: string;
-    appointmentId: string;
-    cancellationReason: string | null;
+    note?: string;
+    appointmentId?: string;
     createdAt: Date
     id: string
-    userId: string
+    userId?: string
+  }
+
+  export interface CreateAppointmentParams{
+    name: string;
+    email: string;
+    phoneNumber: string;
+    Location: 'Abuja' | 'Lagos';
+    treatment: string;
+    schedule: Date;
+    status: Status;
+    primaryPhysician: string;
+    reason: string;
+    note?: string;
+    appointmentId?: string;
+    createdAt: Date
+    id: string
+    userId?: string
   }
 
 export interface UpdateAppointmentParams {
@@ -60,6 +76,7 @@ export interface UpdateAppointmentParams {
   export interface Products{
     name: string,
       price: string;
+      number: number;
       category: string;
       skinConcern: string;
       skinType: SkinType;
@@ -68,6 +85,13 @@ export interface UpdateAppointmentParams {
       images?: string[];
       id: string
       status: ProductStatus
+      productId: string
+  }
+
+  
+  export interface updateProducts{
+      product: Products
+      productId: string
   }
 
 

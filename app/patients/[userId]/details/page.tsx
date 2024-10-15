@@ -12,7 +12,7 @@ const PatientDetails = async ({ params: { userId } }: SearchParamProps) => {
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
-          <DetailsForm user={user}  />
+          <DetailsForm user={user!}  />
           <p className="copyright py-12">© 2024 CarePluse</p>
         </div>
       </section>

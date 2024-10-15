@@ -25,7 +25,7 @@ const AppointmentModal = ({
     type: "schedule" | "cancel" | "create";
     title: string;
     description: string;
-    user:"visitor" | "client";
+    user?:"visitor" | "client";
     patient?: Patient
 }) => {
     const [open, setOpen] = useState(false);
@@ -56,7 +56,7 @@ const AppointmentModal = ({
               type={type}
               appointment={appointment}
               setOpen={setOpen}
-              user={user}
+              user={user!}
               patient={patient}
             />
         </div>

@@ -90,7 +90,7 @@ declare type SearchParamProps = {
     privacyConsent: boolean;
   }
   
-  declare type CreateAppointmentParams = {
+  declare type ointmentParams = {
     name: string;
     email: string;
     phoneNumber: string;

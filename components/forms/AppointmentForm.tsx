@@ -55,16 +55,17 @@ const AppointmentForm = ({
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      name: patient ? patient.name : appointment ? appointment.name : '',
-    email: patient ? patient.email : appointment ? appointment.email : '',
-    phoneNumber: patient ? patient.phone : appointment ? appointment.phoneNumber : '',
-      Location: appointment ? appointment.Location : 'Abuja',
-      treatment: appointment ? appointment.treatment : '',
+      ...(type === "create" && {
+        name: patient ? patient.name : appointment ? appointment.name : '',
+        email: patient ? patient.email : appointment ? appointment.email : '',
+        phoneNumber: patient ? patient.phone : appointment ? appointment.phoneNumber : '',
+        Location: appointment ? (appointment.Location as 'Abuja' | 'Lagos') : 'Abuja',
+        treatment: appointment ? appointment.treatment : '',
+      }),
       primaryPhysician: appointment ? appointment.primaryPhysician : '',
-      schedule:  new Date(),
+      schedule: new Date(),  // Schedule is always included
       reason: appointment ? appointment.reason : '',
       note: appointment ? appointment.note : '',
-      cancellationReason: appointment?.cancellationReason || '',
     },
   })
 
@@ -100,6 +101,8 @@ const AppointmentForm = ({
           createdAt: new Date()
         }
         console.log(appointmentData)
+
+                                                    //@ts-ignore
         const appointment = await createSkyeAppointment(appointmentData);
 
         if (appointment) {
@@ -123,15 +126,14 @@ const AppointmentForm = ({
             primaryPhysician: values.primaryPhysician,
             schedule: new Date(values.schedule),
             status: status as Status,
-            cancellationReason: values.cancellationReason,
+            reason: values.reason,
           },
           type,
   }
     const updatedAppointment = await updateAppointments(appointmentId!, appointmentToUpdate)
-    if(updatedAppointment){
+
       setOpen && setOpen(false);
       form.reset();
-    }
       };
     } catch (error: any) {
       console.log(error);
@@ -424,7 +426,7 @@ const AppointmentForm = ({
             <CustomFormField
               fieldType={FormFieldType.TEXTAREA}
               control={form.control}
-              name="cancellationReason"
+              name="reason"
               label="Reason for cancellation"
               placeholder="Urgent meeting came up"
             />

@@ -12,9 +12,13 @@ const page = async({ params: { userId } }: SearchParamProps) => {
   console.log('userAppointment', userAppointment)
   return (
     <div>
-    <PatientDashboard 
-    patient={patient}
-    userAppointment={userAppointment}/>
+        {
+          patient && userAppointment &&(
+            <PatientDashboard 
+            patient={patient}
+            userAppointment={userAppointment}/>
+          )
+        }
     </div>   
   )
 }

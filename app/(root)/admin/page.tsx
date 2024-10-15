@@ -9,7 +9,7 @@ import { getAppointmentList } from '@/lib/actions/appointments.actions'
 
 const Admin = async ({ searchParams }: SearchParamProps) => {
   const appointmentId = (searchParams?.id as string) || '';
-  const appointments = await getAppointmentList(appointmentId);
+  const appointments = await getAppointmentList();
 
   console.log(appointments, typeof appointments?.scheduledCount)
   // Function to extract and log all appointment IDs

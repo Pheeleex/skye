@@ -19,7 +19,7 @@ import { FileUploader } from '../FileUploader'
 import { nanoid } from 'nanoid'
 import { FormFieldType } from './AppointmentForm'
 import { Appointment } from '@/types/firebasetypes'
-import { addDetails, addPatients } from '@/lib/actions/patients.actions'
+import { addPatients } from '@/lib/actions/patients.actions'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { storage } from '@/lib/firebase'
 

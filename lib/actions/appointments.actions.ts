@@ -1,29 +1,20 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { ID, Permission, Query, Role } from "node-appwrite";
-
-
-import {
-  APPOINTMENT_COLLECTION_ID,
-  SKYE_APPOINTMENT_COLLECTION_ID,
-  DATABASE_ID,
-  PRODUCTS_COLLECTION_ID,
-  databases,
-  messaging,
-  storage,
-  STORE_BUCKETS_ID,
-  BUCKET_ID,
-  ENDPOINT,
-  PROJECT_ID,
-} from "../appwrite.config";
-import { formatDateTime, parseStringify } from "../utils";
-import App from "next/app";
-import { InputFile } from "node-appwrite/file";
-import { addDoc, collection, doc, DocumentData, getDocs, orderBy, query, QueryDocumentSnapshot, Timestamp, updateDoc, where } from "firebase/firestore";
+import { parseStringify } from "../utils";
+import { 
+  addDoc, 
+  collection, 
+  doc, 
+  getDocs, 
+  orderBy, 
+  query,  
+  updateDoc, 
+  where } from "firebase/firestore";
 import { db } from "../firebase";
-import { Appointment } from "@/types/firebasetypes";
+import { Appointment, CreateAppointmentParams } from "@/types/firebasetypes";
 import twilio from 'twilio';
+
 
 
 const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID; // Your Account SID from .env.local
@@ -63,7 +54,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
       });
 
       console.log('SMS sent successfully:', message.sid);
-    } catch (smsError) {
+    } catch (smsError:any) {
       // Handle errors related to Twilio SMS sending
       console.error('Error sending SMS:', smsError);
 
@@ -173,7 +164,7 @@ export const getUserAppointment = async (userId: string): Promise<Appointment[]>
   }
 };
 
-export const getAppointmentList = async (appointmentId: string) => {
+export const getAppointmentList = async () => {
   try {
     const appointmentsRef = collection(db, 'skyeAppointment');  // Reference to the collection
     const appointmentsQuery = query(appointmentsRef, orderBy("createdAt", "desc"));  // Query with order
@@ -256,17 +247,3 @@ export const updateAppointments = async (userId: string, appointmentToUpdate: { 
 };
 
 
-export const sendSMSNotification = async (userId: string, content: string) => {
-  try {
-    // https://appwrite.io/docs/references/1.5.x/server-nodejs/messaging#createSms
-    const message = await messaging.createSms(
-      ID.unique(),
-      content,
-      [],
-      [userId]
-    );
-    return parseStringify(message);
-  } catch (error) {
-    console.error("An error occurred while sending sms:", error);
-  }
-};

@@ -1,9 +1,10 @@
 import ProductForm from '@/components/forms/ProductsForm';
-import { getProducts } from '@/lib/firebase';
+
 import { StoreProps } from '@/types/firebasetypes';
 
 import SearchFilter from '@/components/SearchFilter';
 import Products from '@/components/Products';
+import { getProducts } from '@/lib/actions/products.actions';
 
 const Page = async ({ searchParams }: StoreProps) => {
   // Fetch the products data based on the searchParams
@@ -52,7 +53,7 @@ const Page = async ({ searchParams }: StoreProps) => {
       <div className="max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg mb-8">
         <ProductForm 
           type={formType}
-          products={selectedProduct}  // Pass the selected product when in "update" mode
+          products={selectedProduct!}  // Pass the selected product when in "update" mode
           productId={selectedProduct?.id ?? ''} 
         />
       </div>
