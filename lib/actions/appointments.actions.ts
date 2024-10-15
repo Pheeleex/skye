@@ -42,7 +42,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
     console.log('Document Reference:', docRef);
 
     // Send SMS notification to the admin
-    const adminPhoneNumber = process.env.NEXT_PUBLIC_AUTH_TOKEN;
+    const adminPhoneNumber = process.env.ADMIN_PHONE_NUMBER;
     const userName = appointment.name;  // Retrieve the name of the user who created the appointment
 
 
@@ -50,7 +50,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
       const message = await client.messages.create({
         body: `An appointment has been created by ${userName}. Please go and confirm availability.`,
         from: appointment.phoneNumber,  // Replace with your Twilio number
-        to: '+2349074358404'  // Admin's phone number
+        to: adminPhoneNumber!  // Admin's phone number
       });
 
       console.log('SMS sent successfully:', message.sid);

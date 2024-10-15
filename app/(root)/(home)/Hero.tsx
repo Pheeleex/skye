@@ -24,9 +24,11 @@ const Hero = () => {
           initial={{ y: 300 }}
           animate={{ y: isVisible ? [200, 0] : 300 }} // Animate only when isVisible is true
           transition={{ duration: 1.5 }}
-          className="flex-1 basis-1/2 p-[6rem] pt-[4rem] h-full flex flex-col gap-4 justify-center items-start gold-layout pb-[2.6rem]"
+          className="flex-1 basis-1/2 p-[2rem] md:p-[6rem] pt-[4rem] h-full flex flex-col gap-4
+          justify-start items-center md:justify-center md:items-start 
+          gold-layout pb-[2.3rem]"
         >
-          <span className="text-yellow-900 text-2xl">Treatment plans</span>
+          <p className="text-yellow-900 text-2xl">Treatment plans</p>
           <h3 className="deep-purple text-5xl font-bold"> 
             The Science of looking good.
           </h3>

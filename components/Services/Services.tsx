@@ -1,6 +1,8 @@
 import React from 'react';
 import { academy, products, treatment } from '@/public';
 import Link from 'next/link';
+import './Services.css'
+import Treatments from './Treatments';
 
 const Services = () => {
   const services = [
@@ -25,7 +27,8 @@ const Services = () => {
   ];
 
   return (
-    <section className="py-16 gold-layout mt-[10rem]" aria-labelledby="services-heading">
+    <>
+    <section className="py-[5rem] gold-layout mt-[4rem]" aria-labelledby="services-heading">
       <h2 className="text-center text-3xl font-bold mb-10" id="services-heading">
         Our Services
       </h2>
@@ -44,6 +47,8 @@ const Services = () => {
         ))}
       </div>
     </section>
+    <Treatments />
+  </>
   );
 };
 
