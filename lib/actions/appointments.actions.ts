@@ -18,7 +18,7 @@ import twilio from 'twilio';
 
 
 const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID; // Your Account SID from .env.local
-const authToken = process.env.NEXT_PUBLIC_AUTH_TOKEN; // Your Auth Token from .env.local
+const authToken = process.env.NEXT_PUBLIC_TW_AUTH_TOKEN; // Your Auth Token from .env.local
 const client = twilio(accountSid, authToken);
 
 
