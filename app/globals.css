@@ -503,7 +503,7 @@ font-weight: bold;
 
 .slide-img{
   transition: translate 300ms ease-in-out;
-  flex-grow: 0;
+  flex-grow: 1;
   flex-shrink: 0;
   object-fit: cover;
 }
@@ -529,4 +529,8 @@ font-weight: bold;
 
 .deep-purple{
  color: #230e30;
+}
+
+.bg-deep_purple{
+  background-color:#230e30;
 }

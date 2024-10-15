@@ -1,28 +1,34 @@
 'use client';
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from 'framer-motion';
 import CustomSlider from "@/components/CustomSlider";
 import { skin2, theSkin } from "@/public";
+import { useEffect, useState } from "react";
 
 const Hero = () => {
   const contentImages = [skin2, theSkin]; 
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Set the state to true to trigger the animation once on component mount
+    setIsVisible(true);
+  }, [])
 
   return (
-    <section className="home mt-0  h-full" aria-labelledby="hero-heading">
-      <div className="slide flex flex-col lg:flex-row justify-between items-center   h-full">
+    <section className="home mt-0 h-full " aria-labelledby="hero-heading">
+      <div className="slide flex flex-col lg:flex-row justify-between items-start h-full ">
         
         {/* Left content section */}
         <motion.div
           initial={{ y: 300 }}
-          whileInView={{ y: [200, -40, 0] }}
+          animate={{ y: isVisible ? [200, 0] : 300 }} // Animate only when isVisible is true
           transition={{ duration: 1.5 }}
-          className="flex-1 basis-1/2 pl-[1.4rem] p-[6rem] h-full flex flex-col gap-2 justify-center items-start gold-layout"
+          className="flex-1 basis-1/2 p-[6rem] pt-[4rem] h-full flex flex-col gap-4 justify-center items-start gold-layout pb-[2.6rem]"
         >
           <span className="text-yellow-900 text-2xl">Treatment plans</span>
           <h3 className="deep-purple text-5xl font-bold"> 
-            The Science of feeling good.
+            The Science of looking good.
           </h3>
           <p className="text-black text-lg p-2 leading-[1.5]">
             Explore urban brilliance<br />
@@ -45,7 +51,8 @@ const Hero = () => {
           <CustomSlider
             items={contentImages}
             width={500}  // Adjust width if needed
-            height={300} // Adjust height if needed
+            height={500} // Adjust height if needed
+            slideContClass="h-full w-full bg-yellow-200"
           />
         </div>
       </div>
