@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 
+
 .nav-item{
     color:rgb(87, 75, 7);
     font-weight: bold;
@@ -497,4 +498,35 @@ font-weight: bold;
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+.slide-img{
+  transition: translate 300ms ease-in-out;
+  flex-grow: 0;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+
+.dotStyle{
+  transition: scale 100ms ease-in-out;
+}
+
+.dotStyle:hover{
+  scale: 1.2;
+}
+
+@keyframes squish {
+  50% {
+    scale: 1.4 0.6;
+  }
+}
+
+.gold-layout{
+  background-color: rgb(207, 160, 57, 0.4);
+}
+
+.deep-purple{
+ color: #230e30;
 }

@@ -1,0 +1,108 @@
+/* General Styles */
+.reviews .review-container {
+    border: 0.1rem solid rgba(252, 83, 83, 0.3);
+    border-right: none;
+    padding: 0;
+    display: flex;
+    font-family: 'Lato', sans-serif;
+  }
+  
+  .review-container .sample {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    border-right: 0.1rem solid rgba(252, 83, 83, 0.3);
+    padding: 5%;
+    width: 50%;
+  }
+  
+  .review-container .sample button {
+    width: 10rem;
+    padding: 0.6rem;
+    border: 0.14rem solid #880808;
+    background: transparent;
+    color: #880808;
+    cursor: pointer;
+  }
+  
+  .review-container .sample button:hover {
+    background: #880808;
+    color: #fff;
+    transition: 1s;
+  }
+  
+  .review-container h3 {
+    margin: 0;
+    color: #880808;
+    font-size: 2.4rem;
+  }
+  
+  .review-container p {
+    margin: 0;
+    color: #880808;
+    font-size: 1.4rem;
+  }
+  
+  .review-container .name {
+    font-size: 1rem;
+    color: #880808;
+  }
+  
+  .review{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    border-right:  0.1rem solid rgba(252, 83, 83, 0.3);
+    padding: 4rem;
+    padding-left: 6rem;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: antiquewhite;
+    overflow: hidden;
+  }
+
+  /* Slider Styles */
+  .review-slider {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+  
+  
+  @media (max-width: 939px) {
+    .reviews .review-container {
+      flex-direction: column;
+      max-height: 52rem;
+    }
+  
+    .review {
+      padding: 4%;
+      border: 0.1rem solid rgba(252, 83, 83, 0.3);
+      width: 100%;
+      background-color: antiquewhite;
+    }
+  
+    .review-container .sample {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 450px) {
+    .reviews .review-container {
+      max-height: 67rem;
+    }
+  
+    .review-container .sample {
+      max-height: 38rem;
+    }
+  
+    .review {
+      padding: 1.52rem;
+      padding-top: 2.2rem;
+    }
+  }
+  

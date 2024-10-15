@@ -28,14 +28,14 @@ const Navbar = () => {
   if (pathname === "/admin") return null;
 
   return (
-    <nav className="flex justify-between items-center p-2 md:p-4 relative bg-white shadow-sm">
+    <nav className="flex justify-between items-center p-2 relative bg-white shadow-sm">
       <div>
         <Link href="/">
           <Image
             src="/skye logo.png"
             alt="logo"
-            width={150}
-            height={150}
+            width={180}
+            height={100}
             className="cursor-pointer"
           />
         </Link>

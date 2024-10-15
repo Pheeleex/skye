@@ -43,7 +43,7 @@ const SearchFilter = ({ searchParams }: StoreProps) => {
       params.delete(key);
     }
     const newPathname = `${window.location.pathname}?${params.toString()}`;
-    router.push(newPathname, {scroll: false});
+    router.push(newPathname);
   };
 
   return (
