@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { parseStringify } from "../utils";
-import { 
+import {
   addDoc, 
   collection, 
   doc, 
@@ -173,7 +173,7 @@ export const getAppointmentList = async () => {
     // Map the documents into an Appointment array, converting timestamps if necessary
     const appointments = appointmentSnapshot.docs.map((doc) => {
       const data = doc.data();
-
+      
       // Convert Firestore Timestamps to Date objects (if schedule is a Timestamp)
       if (data.schedule && data.schedule.toDate) {
         data.schedule = data.schedule.toDate(); // Convert to Date object
@@ -214,12 +214,16 @@ export const getAppointmentList = async () => {
 
     // Return the result as a stringified object (if needed)
     return parseStringify(data);
-
+  
   } catch (error) {
     console.log("Error fetching appointments:", error);
     throw new Error("Failed to fetch appointments");  // Throw an error for easier debugging
   }
 };
+
+
+
+
 
 
 export const updateAppointments = async (userId: string, appointmentToUpdate: { appointment: Partial<Appointment>, type: string }) => {
