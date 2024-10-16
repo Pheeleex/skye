@@ -54,13 +54,12 @@ const Navbar = () => {
 
       {/* Desktop Nav */}
       <div className="hidden md:flex space-x-6">
-        <Link href="/" className={`nav-link ${isActive('/')}`}>Home</Link>
+        <Link href="/" className={`nav-link ${isActive('/')}`} onClick={toggleNav}>Home</Link>
         {links.map((link) => (
-          <Link key={link} href={`/${link.toLowerCase()}`} className={`nav-link ${isActive(`/${link.toLowerCase()}`)}`}>
+          <Link key={link} href={`/${link.toLowerCase()}`} className={`nav-link ${isActive(`/${link.toLowerCase()}`)}`} onClick={toggleNav}>
             {link}
           </Link>
         ))}
-         <Link href='/schedule-appointment' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
       </div>
 
       {/* Mobile Nav */}
@@ -95,7 +94,6 @@ const Navbar = () => {
             </li>
           ))}
         </ul>
-        <Link href='/schedule-appointment' className="p-[9px] bg-[#756300] text-yellow-100 rounded-lg" >Book Appointment </Link>
       </div>
     </nav>
   );

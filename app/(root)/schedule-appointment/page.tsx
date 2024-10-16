@@ -11,7 +11,7 @@ const Home = ({ searchParams }: SearchParamProps) => {
   const isAdmin = searchParams?.admin === "true";
 
   return (
-    <div className="flex h-screen max-h-screen">
+    <div className="flex-col md:flex h-screen max-h-screen">
 
 
        {isAdmin && <PassKeyModal /> }

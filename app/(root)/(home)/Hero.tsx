@@ -40,11 +40,11 @@ const Hero = () => {
             workspace innovation. 
           </p>
           <Link
-            href='/Products'
+            href='/schedule-appointment'
             className="btn mt-4 inline-block text-xl deep-purple bg-transparent border border-[#d1b1b1] py-2 px-12 
             hover:text-white hover:bg-[#230e30] transition duration-1000"
           >
-            Get started
+            Book Appointment
           </Link>
         </motion.div>
 
