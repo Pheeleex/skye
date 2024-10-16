@@ -25,13 +25,13 @@ import { FilterProps, Products, SetProducts } from "@/types/firebasetypes";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCrFzbq7UI_IZr9wS1oobjGRvqe4WXw31U",
-  authDomain: "skye-30aeb.firebaseapp.com",
-  projectId: "skye-30aeb",
-  storageBucket: "skye-30aeb.appspot.com",
+  apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
   messagingSenderId: "880574176963",
-  appId: "1:880574176963:web:fbea90c8b3581098ae4c76",
-  measurementId: "G-7LSBKE5JPK"
+  appId: process.env.NEXT_PUBLIC_APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
 
 // Initialize Firebase

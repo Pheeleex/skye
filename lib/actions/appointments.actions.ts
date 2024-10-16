@@ -26,8 +26,8 @@ import { Appointment } from "@/types/firebasetypes";
 import twilio from 'twilio';
 
 
-const accountSid = process.env.TW_ACCOUNT_SID; // Your Account SID from .env.local
-const authToken = process.env.AUTH_TOKEN; // Your Auth Token from .env.local
+const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID; // Your Account SID from .env.local
+const authToken = process.env.NEXT_PUBLIC_AUTH_TOKEN; // Your Auth Token from .env.local
 const client = twilio(accountSid, authToken);
 
 
@@ -51,7 +51,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
     console.log('Document Reference:', docRef);
 
     // Send SMS notification to the admin
-    const adminPhoneNumber = process.env.ADMIN_PHONE_NUMBER;
+    const adminPhoneNumber = process.env.NEXT_PUBLIC_AUTH_TOKEN;
     const userName = appointment.name;  // Retrieve the name of the user who created the appointment
 
 
