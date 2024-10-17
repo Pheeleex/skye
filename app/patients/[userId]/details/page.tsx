@@ -17,13 +17,15 @@ const PatientDetails = async ({ params: { userId } }: SearchParamProps) => {
         </div>
       </section>
 
-      <Image
+     <div className="hidden md:block">
+     <Image
         src="/assets/images/register-img.png"
         height={1000}
         width={700}
         alt="patient"
         className="side-img max-w-[390px]"
       />
+     </div>
     </div>
   );
 };
