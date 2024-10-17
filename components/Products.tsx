@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Trash2, Plus, ShoppingBag } from 'lucide-react'; // Importing Lucide icons
 import { useState } from 'react';
 
-const ProductsList = ({ products }: { products: any[] }) => {
+const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -72,22 +72,31 @@ const ProductsList = ({ products }: { products: any[] }) => {
 
           {/* Actions Section */}
           <div className="flex justify-between items-center space-x-4 p-5 border-t border-gray-200 bg-gray-50">
-            <Trash2
-              className="cursor-pointer text-red-600 hover:text-red-700 transition-colors"
-              onClick={() => deleteProduct(product.id!, product.name ?? '', () => console.log('Product Deleted'))}
-              size={24}
-            />
-            <Plus
-              className="cursor-pointer text-blue-600 hover:text-blue-700 transition-colors"
-              onClick={() => handleEdit(product)}
-              size={24}
-            />
-            <button 
-              className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            >
-              <ShoppingBag size={18} />
-              <span>Add to Bag</span>
-            </button>
+            {isAdmin ? (
+              <>
+                {/* Show Delete and Edit buttons for Admin */}
+                <Trash2
+                  className="cursor-pointer text-red-600 hover:text-red-700 transition-colors"
+                  onClick={() => deleteProduct(product.id!, product.name ?? '', () => console.log('Product Deleted'))}
+                  size={24}
+                />
+                <Plus
+                  className="cursor-pointer text-blue-600 hover:text-blue-700 transition-colors"
+                  onClick={() => handleEdit(product)}
+                  size={24}
+                />
+              </>
+            ) : (
+              <>
+                {/* Show Add to Bag button for Users */}
+                <button 
+                  className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <ShoppingBag size={18} />
+                  <span>Add to Bag</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       ))}

@@ -37,11 +37,6 @@ const Page = ({ searchParams }: StoreProps) => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      {/* Product Form */}
-      <div className="max-w-2xl mx-auto bg-white p-8 shadow-lg rounded-lg mb-8">
-        <ProductForm />
-      </div>
-
       {/* Search Filter */}
       <SearchFilter searchParams={searchParams} />
 
@@ -50,8 +45,9 @@ const Page = ({ searchParams }: StoreProps) => {
         <div>Loading products...</div>
       ) : (
         <Products 
-          isAdmin={true}
-          products={products} />
+          isAdmin={false}
+          products={products}
+           />
       )}
     </div>
   );
