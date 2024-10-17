@@ -18,7 +18,7 @@ const Sidebar = ({patient}:{patient: Patient}) => {
   ];
 
   return (
-    <aside className="w-64 bg-white shadow-md h-full">
+    <aside className="hidden md:block w-64 bg-white shadow-md h-full">
       <div className="p-6">
         <h2 className="text-xl font-bold mb-6">Patient Dashboard</h2>
         <AppointmentModal
