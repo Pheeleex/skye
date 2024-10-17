@@ -35,7 +35,7 @@ const PatientDashboard = (
               />
   
             {/* History */}
-            <HistorySection />
+          {/*  <HistorySection /> /*}
   
             {/* Prescriptions */}
             <PrescriptionSection />
