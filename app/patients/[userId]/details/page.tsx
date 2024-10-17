@@ -9,7 +9,7 @@ const PatientDetails = async ({ params: { userId } }: SearchParamProps) => {
  
 
   return (
-    <div className="flex-col md:flex h-screen max-h-screen">
+    <div className="flex flex-col md:flex-row h-screen max-h-screen">
       <section className="remove-scrollbar container">
         <div className="sub-container max-w-[860px] flex-1 flex-col py-10">
           <DetailsForm user={user!}  />
