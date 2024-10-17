@@ -36,13 +36,15 @@ const Home = ({ searchParams }: SearchParamProps) => {
           </div>
         </div>
       </section>
-      <Image
+     <div className="hidden md:block">
+         <Image
         src="/assets/images/onboarding-img.png"
         height={1000}
         width={700}
         alt="patient"
-        className="side-img max-w-[50%]"
+        className="side-img max-w-[50%] "
       />
+     </div>
     </div>
   );
 };
