@@ -127,6 +127,8 @@ const AppointmentForm = ({
             schedule: new Date(values.schedule),
             status: status as Status,
             reason: values.reason,
+            phoneNumber: appointment?.phoneNumber,
+            note: values.note
           },
           type,
   }

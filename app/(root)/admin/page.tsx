@@ -11,16 +11,9 @@ const Admin = async ({ searchParams }: SearchParamProps) => {
   const appointmentId = (searchParams?.id as string) || '';
   const appointments = await getAppointmentList();
 
-  console.log(appointments, typeof appointments?.scheduledCount)
+  //console.log(appointments, typeof appointments?.scheduledCount)
   // Function to extract and log all appointment IDs
-  const logAppointmentIds = () => {
-    const appointmentIds = appointments?.documents?.map((appointment: any) => appointment.id) || [];
-    console.log("Appointment IDs:", appointmentIds);
-  };
-
-  // Log the appointment IDs
-  logAppointmentIds();
-
+ 
   
 
   return (

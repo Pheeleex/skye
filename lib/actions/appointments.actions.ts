@@ -39,7 +39,6 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
 
     // Log the document ID and other details
     console.log('Appointment added successfully:', docRef.id);
-    console.log('Document Reference:', docRef);
 
     // Send SMS notification to the admin
     const adminPhoneNumber = process.env.ADMIN_PHONE_NUMBER;
@@ -49,8 +48,8 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
     try {
       const message = await client.messages.create({
         body: `An appointment has been created by ${userName}. Please go and confirm availability.`,
-        from: appointment.phoneNumber,  // Replace with your Twilio number
-        to: adminPhoneNumber!  // Admin's phone number
+        from: '+12089131544',  // Replace with your Twilio number
+        to: '+2349074358404'  // Admin's phone number
       });
 
       console.log('SMS sent successfully:', message.sid);
@@ -241,6 +240,22 @@ export const updateAppointments = async (userId: string, appointmentToUpdate: { 
       ...appointmentToUpdate.appointment,
       // Add any other fields to update if necessary
     });
+    console.log(appointmentToUpdate.appointment.phoneNumber)
+    console.log(appointmentToUpdate.appointment.note)
+
+
+ try {
+      const message = await client.messages.create({
+        body: appointmentToUpdate.appointment.note + ' -booking confirmed',
+        from: process.env.TW_PHONE_NUMBER,  // Replace with your Twilio number
+        to: appointmentToUpdate.appointment.phoneNumber! // Admin's phone number
+      });
+
+      console.log('SMS sent successfully:', message.sid);
+    } catch (smsError:any) {
+      // Handle errors related to Twilio SMS sending
+      console.error('Error sending SMS:', smsError);
+    } 
     console.log('Appointment updated successfully:', appointmentId);
     revalidatePath('/admin')
     return updatedAppointment
