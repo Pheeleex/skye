@@ -16,17 +16,14 @@ const Hero = () => {
   }, [])
 
   return (
-    <section className="home mt-0 h-full " aria-labelledby="hero-heading">
-      <div className="slide flex flex-col lg:flex-row justify-between items-start h-full ">
+    <section className="mt-0 gold-layout h-full" aria-labelledby="hero-heading">
+      <div className="flex flex-col lg:flex-row justify-between items-start min-h-[100vh] ">
         
         {/* Left content section */}
-        <motion.div
-          initial={{ y: 300 }}
-          animate={{ y: isVisible ? [200, 0] : 300 }} // Animate only when isVisible is true
-          transition={{ duration: 1.5 }}
-          className="flex-1 basis-1/2 p-[2rem] md:p-[6rem] pt-[4rem] h-full flex flex-col gap-4
+        <div
+          className="flex-1 basis-1/2 p-[4rem] md:[6rem] h-full flex flex-col gap-4
           justify-start items-center md:justify-center md:items-start 
-          gold-layout pb-[2.3rem]"
+          "
         >
           <p className="text-yellow-900 text-2xl">Treatment plans</p>
           <h3 className="deep-purple text-5xl font-bold"> 
@@ -46,14 +43,14 @@ const Hero = () => {
           >
             Book Appointment
           </Link>
-        </motion.div>
+        </div>
 
         {/* Right slider section */}
-        <div className="flex-1 basis-1/2 h-full">
+        <div className="flex-1 basis-1/2 h-full w-full">
           <CustomSlider
             items={contentImages}
-            width={500}  // Adjust width if needed
-            height={500} // Adjust height if needed
+            width={700}  // Adjust width if needed
+            height={1000} // Adjust height if needed
             slideContClass="h-full w-full bg-yellow-200"
           />
         </div>

@@ -29,7 +29,6 @@ const Admin = async ({ searchParams }: SearchParamProps) => {
           />
         </Link>
         <Link href='/admin/store' className="text-16-semibold">Store</Link>
-        <p className="text-16-semibold">Admin Dashboard</p>
       </header>
 
       <main className="admin-main">

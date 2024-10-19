@@ -31,13 +31,12 @@ const AppointmentModal = ({
     const [open, setOpen] = useState(false);
 
    
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
     <DialogTrigger asChild>
         <Button variant="ghost" 
-        className={`capitalize ${type === 'schedule' ? 'text-green-500' : ''} 
-        ${user === 'visitor' ? '' : 'p-2 bg-slate-600 text-white'}`}
+        className={`capitalize ${type === 'schedule' ? 'text-green-500' : 'text-red-700'} 
+        ${user === 'visitor' ? '' : 'p-2 bg-slate-200 '}`}
 
         >
             {type}

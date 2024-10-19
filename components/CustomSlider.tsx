@@ -41,7 +41,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
   };
 
   return (
-    <div className={`${largeCont} h-full w-full relative flex`}>
+    <div className={`${largeCont} h-full w-full relative flex `}>
       <div className={`image ${slideContClass} flex w-full h-full overflow-hidden`}>
         {items.map((url, index) => (
           <Image

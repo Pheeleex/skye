@@ -21,7 +21,7 @@ export const columns: ColumnDef<Appointment>[] = [
        accessorKey: 'patient',
        header: 'Patient',
        cell: ({row}) => 
-       <p className="text-14-medium">{row.original.name} - {row.original.id}</p>
+       <p className="text-14-medium">{row.original.name}</p>
        
     },
    
