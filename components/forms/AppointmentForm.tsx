@@ -179,7 +179,7 @@ const AppointmentForm = ({
                 Appointment booked successfully!
               </div>
             )}
-              <div>
+              <div className='flex flex-col gap-3'>
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={form.control}
