@@ -339,7 +339,7 @@ const AppointmentForm = ({
 
 {
   type === 'schedule' && (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-3">
       {/* Displaying Name, Email, Phone Number, and Location as text */}
       <div className="flex flex-wrap gap-8 items-center">
         <p><strong>Name:</strong> {appointment?.name}</p>
@@ -350,14 +350,7 @@ const AppointmentForm = ({
 
       {/* Other fields remain editable */}
       <div className="flex flex-col gap-16 xl:flex-row">
-        <CustomFormField
-          fieldType={FormFieldType.DATE_PICKER}
-          control={form.control}
-          name="schedule"
-          label="Expected appointment date"
-          showTimeSelect
-          dateFormat="MM/dd/yyyy  -  h:mm aa"
-        />
+       
 
         <CustomFormField
           fieldType={FormFieldType.SELECT}
@@ -366,6 +359,7 @@ const AppointmentForm = ({
           label="Doctor"
           placeholder="Select a doctor"
         >
+
           {Doctors.map((doctor, i) => (
             <SelectItem key={doctor.name + i} value={doctor.name}>
               <div className="flex cursor-pointer items-center gap-2">
@@ -381,6 +375,15 @@ const AppointmentForm = ({
             </SelectItem>
           ))}
         </CustomFormField>
+
+        <CustomFormField
+          fieldType={FormFieldType.DATE_PICKER}
+          control={form.control}
+          name="schedule"
+          label="Expected appointment date"
+          showTimeSelect
+          dateFormat="MM/dd/yyyy  -  h:mm aa"
+        />
       </div>
 
       <div className="flex flex-col">

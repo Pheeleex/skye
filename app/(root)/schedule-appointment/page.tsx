@@ -36,7 +36,7 @@ const Home = ({ searchParams }: SearchParamProps) => {
           </div>
         </div>
       </section>
-     <div className="hidden md:block">
+     <div className="hidden lg:block">
          <Image
         src="/assets/images/onboarding-img.png"
         height={1000}

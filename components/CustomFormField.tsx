@@ -45,7 +45,8 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
       placeholder,
       showTimeSelect, 
       dateFormat,
-      renderSkeleton
+      renderSkeleton,
+      name
     } = props;
     switch(fieldType){
         case FormFieldType.INPUT:
@@ -66,7 +67,17 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
                 <Input
                     placeholder={props.placeholder}
                     {...field}
+                    onChange={(e) => {
+                      // Explicitly handle number type inputs
+                      if (name === "number") {
+                        const parsedValue = parseFloat(e.target.value);
+                        field.onChange(isNaN(parsedValue) ? "" : parsedValue);
+                      } else {
+                        field.onChange(e.target.value);
+                      }
+                    }}
                     className="shad-input border-0"
+                    type={name === "number" ? "number" : "text"} 
                     />
             </FormControl> 
             </div>

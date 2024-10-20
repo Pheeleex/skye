@@ -69,58 +69,54 @@ const PassKeyModal = () => {
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent className="max-w-sm w-full sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-start justify-between text-lg md:text-xl">
-            Admin Access Verification
-            <Image
-              src="/assets/icons/close.svg"
-              alt="close"
-              width={20}
-              height={20}
-              onClick={() => closeModal()}
-              className="cursor-pointer"
-            />
+    <AlertDialogContent className='shad-alert-dialog'>
+      <AlertDialogHeader>
+        <AlertDialogTitle className='flex items-start justify-between'>
+          Admin access verification
+          <Image
+                src="/assets/icons/close.svg"
+                alt="close"
+                width={20}
+                height={20}
+                onClick={() => closeModal()}
+                className="cursor-pointer"
+              />
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-sm md:text-base text-gray-600">
-            To access the admin page, please enter the passkey.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        
-        <div className="mt-4">
+        <AlertDialogDescription>
+          To access the admin page, please enter the passkey
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <div>
           <InputOTP 
-            maxLength={6}
-            value={passkey}
-            onChange={(value) => setPassKey(value)}
-          >
-            <InputOTPGroup className="flex justify-center space-x-2">
-              {Array.from({ length: 6 }).map((_, index) => (
-                <InputOTPSlot
-                  key={index}
-                  className="w-10 h-10 md:w-12 md:h-12 border border-gray-300 rounded-md text-center text-xl"
-                  index={index}
-                />
-              ))}
-            </InputOTPGroup>
+              maxLength={6}
+              value={passkey}
+              onChange={(value) => setPassKey(value)}
+              >
+              <InputOTPGroup className='shad-otp'>
+                  <InputOTPSlot className='shad-otp-slot' index={0} />
+                  <InputOTPSlot className='shad-otp-slot' index={1} />
+                  <InputOTPSlot className='shad-otp-slot' index={2} />
+                  <InputOTPSlot className='shad-otp-slot' index={3} />
+                  <InputOTPSlot className='shad-otp-slot' index={4} />
+                  <InputOTPSlot className='shad-otp-slot' index={5} />
+              </InputOTPGroup>
           </InputOTP>
-
+  
           {error && (
-            <p className="text-red-500 text-sm md:text-base text-center mt-4">
-              {error}
-            </p>
-          )}
-        </div>
-
-        <AlertDialogFooter className="mt-6">
-          <AlertDialogAction
-            onClick={(e) => validatePassKey(e)}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md text-base md:text-lg transition duration-200"
-          >
-            Enter Admin Passkey
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+              <p className="shad-error text-14-regular mt-4 flex justify-center">
+                {error}
+              </p>
+            )}
+      </div>
+      <AlertDialogFooter>
+      <AlertDialogAction
+              onClick={(e) => validatePassKey(e)}
+              className="shad-primary-btn w-full"
+            >Enter Admin passkey</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+  
   );
 };
 
