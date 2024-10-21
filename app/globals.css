@@ -535,37 +535,5 @@ font-weight: bold;
   background-color:#230e30;
 }
 
-/* Custom CSS for mobile and desktop styling */
 
-.shad-alert-dialog {
-  width: 90%; /* Mobile version */
-}
 
-@media screen and (min-width: 640px) {
-  .shad-alert-dialog {
-    width: 500px; /* Desktop version */
-  }
-}
-
-/* Handle OTP input layout */
-.shad-otp {
-  display: flex;
-  flex-direction: column; /* Mobile */
-}
-
-@media screen and (min-width: 640px) {
-  .shad-otp {
-    flex-direction: row; /* Desktop */
-  }
-}
-
-/* Button styling */
-.shad-primary-btn {
-  width: 100%; /* Mobile */
-}
-
-@media screen and (min-width: 640px) {
-  .shad-primary-btn {
-    width: auto; /* Desktop */
-  }
-}

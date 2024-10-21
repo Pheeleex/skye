@@ -12,6 +12,15 @@ const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean
   
   const [localProducts, setLocalProducts] = useState(products);
 
+  const handleDelete = async (productId: string, productName: string) => {
+    try {
+      await deleteProduct(productId, productName, setLocalProducts);  // Pass the setLocalProducts function here
+    } catch (error) {
+      console.error("Failed to delete product: ", error);
+    }
+  };
+
+
   const handleEdit = async (product: any) => {
     try {
       const updatedProduct = { number: product.number + 1 }; // Increment the number
@@ -77,7 +86,7 @@ const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean
                 {/* Show Delete and Edit buttons for Admin */}
                 <Trash2
                   className="cursor-pointer text-red-600 hover:text-red-700 transition-colors"
-                  onClick={() => deleteProduct(product.id!, product.name ?? '', () => console.log('Product Deleted'))}
+                  onClick={() => handleDelete(product.id!, product.name ?? '')}
                   size={24}
                 />
                 <Plus
