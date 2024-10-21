@@ -23,8 +23,6 @@ const Sidebar = ({patient}:{patient: Patient}) => {
         <h2 className="text-xl font-bold mb-6">Patient Dashboard</h2>
         <AppointmentModal
             type='create'
-            title='add appointment'
-            description='create new appointment'
             user='client'
             patient={patient}
         />

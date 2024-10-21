@@ -105,7 +105,7 @@ const ProductForm = () => {
           placeholder="0"
         />
 
-        <div>
+        <div className='flex flex-col'>
           <CustomFormField
             fieldType={FormFieldType.SKELETON}
             control={form.control}
