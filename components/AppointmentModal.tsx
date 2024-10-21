@@ -31,7 +31,7 @@ const AppointmentModal = ({
       <DialogTrigger onClick={() => setOpen(true)}>
         <button
           className={`capitalize ${type === 'schedule' ? 'text-green-500' : 'text-red-700'} 
-          ${user === 'visitor' ? '' : 'p-2 bg-slate-200'}`}
+          ${user === 'visitor' ? '' : 'p-2 bg-slate-200'} rounded-md`}
         >
           {type}
         </button>
