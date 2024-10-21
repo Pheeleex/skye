@@ -73,15 +73,11 @@ export const columns: ColumnDef<Appointment>[] = [
             appointmentId={appointment.id}
             appointment={appointment}
             type="schedule"
-            title="Schedule Appointment"
-            description="Please confirm the following details to schedule."
           />
           <AppointmentModal
              appointmentId={appointment.id}
              appointment={appointment}
             type="cancel"
-            title="Cancel Appointment"
-            description="Are you sure you want to cancel your appointment?"
           />
       </div>
       )
