@@ -47,12 +47,12 @@ export const DialogTrigger = ({ onClick, children }: { onClick: () => void; chil
 
 // Dialog Content (Content Wrapper Inside Modal)
 export const DialogContent = ({ children }: { children: ReactNode }) => {
-  return <div className='text-gray-900 z-50'>{children}</div>;
+  return <div className='text-gray-900 '>{children}</div>;
 };
 
 // Dialog Header (Header of the Modal)
 export const DialogHeader = ({ children }: { children: ReactNode }) => {
-  return <div className="mb-4 z-50">{children}</div>;
+  return <div className="mb-4 ">{children}</div>;
 };
 
 // Dialog Title (Title Text in Modal Header)

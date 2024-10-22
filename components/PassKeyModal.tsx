@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/legacy/image';
 import { decryptKey, encryptKey } from '@/lib/utils';
+import { setCookie, parseCookies } from 'nookies';
 
 const PassKeyModal = () => {
   const [open, setOpen] = useState(true);
@@ -11,11 +12,9 @@ const PassKeyModal = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]); // Refs for inputs
   const router = useRouter();
 
-  // Retrieve encrypted key from localStorage
-  const encryptedKey =
-    typeof window !== 'undefined'
-      ? window.localStorage.getItem('accessKey')
-      : null;
+  // Retrieve encrypted key from cookies
+  const cookies = parseCookies();
+  const encryptedKey = cookies.accessKey || null;
 
   useEffect(() => {
     const accessKey = encryptedKey ? decryptKey(encryptedKey) : null;
@@ -49,14 +48,18 @@ const PassKeyModal = () => {
     }
   };
 
-  // Validate PassKey
+  // Validate passkey
   const validatePassKey = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    const enteredPassKey = passkey.join(''); // Combine the array into a string
 
-    const enteredPassKey = passkey.join('');
     if (enteredPassKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+      // Encrypt and store the passkey in cookies
       const encryptedKey = encryptKey(enteredPassKey);
-      localStorage.setItem('accessKey', encryptedKey);
+      setCookie(null, 'accessKey', encryptedKey, {
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        path: '/',
+      });
       setOpen(false);
       router.push('/admin');
     } else {

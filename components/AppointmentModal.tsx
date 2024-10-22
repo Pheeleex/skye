@@ -42,7 +42,7 @@ const AppointmentModal = ({
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
           <DialogHeader>
-            <div className="capitalize z-50">
+            <div className="capitalize">
               <DialogTitle>{type} Appointment</DialogTitle>
             </div>
             <DialogDescription>
@@ -51,7 +51,7 @@ const AppointmentModal = ({
           </DialogHeader>
 
           {/* Form Content */}
-          <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin z-50">
+          <div className="max-h-[400px] overflow-y-auto pr-2 scrollbar-thin">
             <AppointmentForm
               appointmentId={appointment?.id}
               type={type}
