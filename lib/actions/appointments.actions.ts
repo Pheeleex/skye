@@ -45,7 +45,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
     const userName = appointment.name;  // Retrieve the name of the user who created the appointment
 
 
-    try {
+    {/*try {
       const message = await client.messages.create({
         body: `An appointment has been created by ${userName}. Please go and confirm availability.`,
         from: '+12089131544',  // Replace with your Twilio number
@@ -72,7 +72,7 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
         appointmentId: docRef.id,
         username: userName
       };
-    }
+    } */}
    
     // Return the document ID or other useful information
     return {
