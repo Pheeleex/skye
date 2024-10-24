@@ -72,12 +72,11 @@ const ProductForm = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         {error && <div className="error-message text-red-700 bg-red opacity-4 p-2">{error}</div>}
-
         <section className="mb-12 space-y-4">
           <h1 className="header">Hi there 👋</h1>
           <p className="text-dark-700">
-            When would you be free to stop by? <br />
-            Please enter your correct details.
+            Any new products today? <br />
+            Add them here.
           </p>
         </section>
 
