@@ -30,11 +30,8 @@ const Hero = () => {
             The Science of looking good.
           </h3>
           <p className="text-black text-lg p-2 leading-[1.5]">
-            Explore urban brilliance<br />
-            with Oyster Properties offering a 
-            diverse collection of dream homes and dynamic 
-            workspaces that redefine luxury living and 
-            workspace innovation. 
+          Discover radiant beauty<br /> with our aesthetic clinic, where we offer a transformative 
+          range of treatments and personalized care that redefine self-care and elevate your confidence. 
           </p>
           <Link
             href='/schedule-appointment'
