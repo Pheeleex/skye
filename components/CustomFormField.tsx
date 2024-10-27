@@ -69,7 +69,7 @@ const RenderField = ({field, props}: {field:any, props: CustomProps}) => {
                     {...field}
                     onChange={(e) => {
                       // Explicitly handle number type inputs
-                      if (name === "number") {
+                      if (name === "number" || name === "price") {
                         const parsedValue = parseFloat(e.target.value);
                         field.onChange(isNaN(parsedValue) ? "" : parsedValue);
                       } else {

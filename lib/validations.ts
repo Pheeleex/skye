@@ -35,7 +35,7 @@ export const StoreFormValidation = z.object({
     .string()
     .min(2, "Name must be at least 2 characters")
     .max(50, "Name must be at most 50 characters"),
- price: z.string(),
+ price: z.number(),
  number: z.number(),
  category: z.string(),
  skinConcern: z.string(),

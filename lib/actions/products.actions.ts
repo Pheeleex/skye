@@ -1,6 +1,7 @@
 import { FilterProps, Products, SetProducts } from "@/types/firebasetypes";
 import { addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, startAfter, 
-    updateDoc, where, limit as firestoreLimit, } from "firebase/firestore";
+    updateDoc, where, limit as firestoreLimit,
+    getDoc, } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { deleteObject, getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 
@@ -142,5 +143,34 @@ export const deleteProduct = async(productId: string, ImagePath:string, setProdu
     console.error(`Error deleting car with id ${productId}:`, error)
   }
 }
+
+
+
+export const getProduct = async (id: string) => {
+  try {
+    // Directly reference the document by its ID within the "products" collection
+    const productDocRef = doc(db, 'products', id);
+    
+    // Fetch the document data
+    const productDoc = await getDoc(productDocRef);
+
+    // Check if the document exists
+    if (!productDoc.exists()) {
+      console.log('No matching product');
+      return null;
+    }
+
+    // Retrieve the document data and spread it into the returned product object
+    const product = { ...productDoc.data(), id: productDoc.id } as Product;
+
+    return product;
+
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw new Error("Failed to fetch product");
+  }
+};
+
+
 
 

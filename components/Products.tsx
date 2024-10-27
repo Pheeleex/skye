@@ -3,40 +3,38 @@
 import { deleteProduct, updateProducts } from '@/lib/actions/products.actions';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Trash2, Plus, ShoppingBag } from 'lucide-react'; // Importing Lucide icons
+import { Trash2, Plus, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 
 const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  
   const [localProducts, setLocalProducts] = useState(products);
 
   const handleDelete = async (productId: string, productName: string) => {
     try {
-      await deleteProduct(productId, productName, setLocalProducts);  // Pass the setLocalProducts function here
+      await deleteProduct(productId, productName, setLocalProducts);
     } catch (error) {
       console.error("Failed to delete product: ", error);
     }
   };
 
-
   const handleEdit = async (product: any) => {
     try {
-      const updatedProduct = { number: product.number + 1 }; // Increment the number
-      
+      const updatedProduct = { number: product.number + 1 };
       await updateProducts(product.id, { product: updatedProduct });
-      
+
       setLocalProducts(prevProducts => 
         prevProducts.map(p => 
           p.id === product.id ? { ...p, number: updatedProduct.number } : p
         )
       );
-  
-      console.log('Product number incremented successfully');
     } catch (error) {
       console.error('Error updating product number: ', error);
     }
+  };
+
+  const handleProductClick = (productId: string) => {
+    router.push(`shop/products/${productId}`);
   };
 
   const isDataEmpty = !Array.isArray(localProducts) || localProducts.length < 1;
@@ -54,11 +52,12 @@ const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean
       {localProducts.map((product) => (
         <div 
           key={product.id} 
-          className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+          className="bg-white border border-gray-200 rounded-lg shadow-lg 
+          overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+          onClick={() => handleProductClick(product.id)}
         >
-          {/* Centered image section */}
           {product.images?.length > 0 && (
-            <div className="w-full h-56 relative flex justify-center items-center bg-gray-50">
+            <div className="w-full h-56 relative flex justify-center items-center ">
               <Image
                 src={product.images[0] || '/placeholder.png'}
                 alt={product.name}
@@ -68,8 +67,7 @@ const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean
               />
             </div>
           )}
-          
-          {/* Product Info */}
+
           <div className="p-5">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-bold text-gray-800">{product.name || 'No Name'}</h2>
@@ -79,32 +77,34 @@ const ProductsList = ({ products, isAdmin }: { products: any[], isAdmin: boolean
             <p className="text-lg font-semibold text-green-600">{product.price ? `$${product.price}` : 'N/A'}</p>
           </div>
 
-          {/* Actions Section */}
           <div className="flex justify-between items-center space-x-4 p-5 border-t border-gray-200 bg-gray-50">
             {isAdmin ? (
               <>
-                {/* Show Delete and Edit buttons for Admin */}
                 <Trash2
                   className="cursor-pointer text-red-600 hover:text-red-700 transition-colors"
-                  onClick={() => handleDelete(product.id!, product.name ?? '')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(product.id!, product.name ?? '');
+                  }}
                   size={24}
                 />
                 <Plus
                   className="cursor-pointer text-blue-600 hover:text-blue-700 transition-colors"
-                  onClick={() => handleEdit(product)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEdit(product);
+                  }}
                   size={24}
                 />
               </>
             ) : (
-              <>
-                {/* Show Add to Bag button for Users */}
-                <button 
-                  className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-                >
-                  <ShoppingBag size={18} />
-                  <span>Add to Bag</span>
-                </button>
-              </>
+              <button 
+                className="bg-gold-400 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <ShoppingBag size={18} />
+                <span>Add to Bag</span>
+              </button>
             )}
           </div>
         </div>

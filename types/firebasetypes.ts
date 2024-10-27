@@ -73,9 +73,9 @@ export interface UpdateAppointmentParams {
       productId?:string
   }
 
-  export interface Products{
+    export interface Products{
     name: string,
-      price: string;
+      price: number;
       number: number;
       category: string;
       skinConcern: string;

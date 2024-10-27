@@ -6,7 +6,7 @@
     padding: 2rem;
   }
   
-  .grid {
+  .grid-template {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem; /* Adjust the gap between grid items */

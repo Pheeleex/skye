@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import ProductForm from "@/components/forms/ProductsForm";
 import SearchFilter from "@/components/SearchFilter";
 import Products from "@/components/Products";
 import { getProducts } from "@/lib/actions/products.actions";

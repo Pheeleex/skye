@@ -29,7 +29,7 @@ const ProductForm = () => {
     resolver: zodResolver(StoreFormValidation),
     defaultValues: {
       name: '',
-      price: '',
+      price: 0,
       category: '',
       skinType: '',
       imageFiles: [],

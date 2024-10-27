@@ -39,7 +39,8 @@ declare type SearchParamProps = {
 
   declare interface addProducts{
     name: string,
-      price: string;
+      price: number;
+      number: number
       category: string;
       skinConcern: string;
       skinType: SkinType;
