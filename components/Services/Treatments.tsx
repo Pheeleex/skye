@@ -14,7 +14,7 @@ const Treatments = () => {
 
   return (
     <div className="treatments-container">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 p-4">
         {treatments.map((treatment, index) => (
           <div className={`image-container ${index % 2 === 1 ? 'staggered' : ''}`} key={index}>
             <img src={treatment.img.src} alt={treatment.title} className="image-s" />
