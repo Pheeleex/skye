@@ -47,7 +47,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
           <Image
             src={items[currentIndex]} 
             alt={`Slide ${index + 1}`}
-            className={`slide-img ${slideImgClass} w-full h-full object-cover`}
+            className={`slide-img ${slideImgClass} h-full w-full`}
             style={{ translate: `${-100 * currentIndex}%` }}
             aria-hidden={currentIndex !== index}
             key={index}
