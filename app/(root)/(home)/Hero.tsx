@@ -22,12 +22,12 @@ const Hero = () => {
         
         {/* Left content section */}
         <div
-          className="p-[4rem] md:[6rem] h-full flex flex-col gap-4
+          className="p-[4rem] md:[6rem] h-full flex flex-col gap-5
           justify-between items-center md:justify-center md:items-start 
           flex-1 basis-1/2"
         >
-          <p className="text-yellow-900 text-2xl">Treatment plans</p>
-          <h3 className="deep-purple text-5xl font-bold"> 
+          <p className="text-yellow-900 text-2xl font-bold">Treatment plans</p>
+          <h3 className="deep-purple text-5xl font-[500]"> 
             The Science of looking good.
           </h3>
           <p className="text-black text-lg p-2 leading-[1.5]">
