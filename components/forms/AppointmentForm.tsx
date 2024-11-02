@@ -179,7 +179,7 @@ const AppointmentForm = ({
                 Appointment booked successfully!
               </div>
             )}
-              <div className='flex flex-col gap-3'>
+              <div className='flex flex-col gap-6'>
                 <CustomFormField
                   fieldType={FormFieldType.INPUT}
                   control={form.control}
@@ -273,7 +273,7 @@ const AppointmentForm = ({
                   />
               </div>
 
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-4">
                 <CustomFormField
                   fieldType={FormFieldType.SELECT}
                   control={form.control}
@@ -350,8 +350,6 @@ const AppointmentForm = ({
 
       {/* Other fields remain editable */}
       <div className="flex flex-col gap-16 xl:flex-row">
-       
-
         <CustomFormField
           fieldType={FormFieldType.SELECT}
           control={form.control}
