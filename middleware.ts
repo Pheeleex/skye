@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { parseCookies } from 'nookies';
 import { decryptKey } from './lib/utils';
 
 export function middleware(req: NextRequest) {

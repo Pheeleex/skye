@@ -148,6 +148,10 @@ font-weight: bold;
     @apply hidden h-full object-cover md:block;
   }
 
+  label{
+    font-weight: bold;
+  }
+
   .copyright {
     @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
   }

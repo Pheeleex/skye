@@ -13,13 +13,7 @@ import {
   where } from "firebase/firestore";
 import { db } from "../firebase";
 import { Appointment, CreateAppointmentParams } from "@/types/firebasetypes";
-import twilio from 'twilio';
 
-
-
-const accountSid = process.env.NEXT_PUBLIC_ACCOUNT_SID; // Your Account SID from .env.local
-const authToken = process.env.NEXT_PUBLIC_TW_AUTH_TOKEN; // Your Auth Token from .env.local
-const client = twilio(accountSid, authToken);
 
 
 
@@ -39,40 +33,6 @@ export const createSkyeAppointment = async ({id,...appointment}:CreateAppointmen
 
     // Log the document ID and other details
     console.log('Appointment added successfully:', docRef.id);
-
-    // Send SMS notification to the admin
-    const adminPhoneNumber = process.env.ADMIN_PHONE_NUMBER;
-    const userName = appointment.name;  // Retrieve the name of the user who created the appointment
-
-
-    {/*try {
-      const message = await client.messages.create({
-        body: `An appointment has been created by ${userName}. Please go and confirm availability.`,
-        from: '+12089131544',  // Replace with your Twilio number
-        to: '+2349074358404'  // Admin's phone number
-      });
-
-      console.log('SMS sent successfully:', message.sid);
-    } catch (smsError:any) {
-      // Handle errors related to Twilio SMS sending
-      console.error('Error sending SMS:', smsError);
-
-      // Optionally log the error in Firestore or another logging service
-      // For example, you could create an error log in Firestore:
-      const errorRef = collection(db, 'smsErrors');
-      await addDoc(errorRef, {
-        error: smsError.message,
-        appointmentId: docRef.id,
-        username: userName
-      });
-
-      // Return a response with error details if necessary
-      return {
-        error: 'SMS not sent. Please check Twilio configuration.',
-        appointmentId: docRef.id,
-        username: userName
-      };
-    } */}
    
     // Return the document ID or other useful information
     return {
@@ -240,22 +200,7 @@ export const updateAppointments = async (userId: string, appointmentToUpdate: { 
       ...appointmentToUpdate.appointment,
       // Add any other fields to update if necessary
     });
-    console.log(appointmentToUpdate.appointment.phoneNumber)
-    console.log(appointmentToUpdate.appointment.note)
 
-
- try {
-      const message = await client.messages.create({
-        body: appointmentToUpdate.appointment.note + ' -booking confirmed',
-        from: process.env.TW_PHONE_NUMBER,  // Replace with your Twilio number
-        to: appointmentToUpdate.appointment.phoneNumber! // Admin's phone number
-      });
-
-      console.log('SMS sent successfully:', message.sid);
-    } catch (smsError:any) {
-      // Handle errors related to Twilio SMS sending
-      console.error('Error sending SMS:', smsError);
-    } 
     console.log('Appointment updated successfully:', appointmentId);
     revalidatePath('/admin')
     return updatedAppointment

@@ -21,6 +21,10 @@
       "@/*": ["./*"]
     }
   },
+<<<<<<< HEAD
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/NotificationHandler.js"],
+=======
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/NotificationHandler.js", "components/appointmentwithTwilio"],
+>>>>>>> af5f1f1 (changes)
   "exclude": ["node_modules"]
 }
