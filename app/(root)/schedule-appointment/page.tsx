@@ -18,14 +18,9 @@ const Home = ({ searchParams }: SearchParamProps) => {
 
 
       <section className="remove-scrollbar container my-auto">
-<<<<<<< HEAD
-        <div className="sub-container max-w-[496px]">
-        <h1>If you have a profile with us please <Link className="text-yellow-800 font-bold border "
-=======
         <div className="sub-container  max-w-[600px]">
         <h1 className="mb-12">Returning patient? 
           <Link className="text-yellow-800 ml-2 p-2 font-bold border rounded-md border-yellow-600 "
->>>>>>> af5f1f1 (changes)
          href={'./clients'}>Click here</Link> </h1>
         <AppointmentForm
           type="create"
@@ -46,15 +41,9 @@ const Home = ({ searchParams }: SearchParamProps) => {
          <Image
         src="/assets/images/onboarding-img.png"
         height={1000}
-<<<<<<< HEAD
-        width={700}
-        alt="patient"
-        className="side-img max-w-[50%] "
-=======
         width={500}
         alt="patient"
         className="side-img w-[200px] max-w-[50%] "
->>>>>>> af5f1f1 (changes)
       />
      </div>
     </div>
